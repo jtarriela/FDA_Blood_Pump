@@ -28,6 +28,7 @@ url_df_3=r'C:\Users\Joseph Tarriela\Documents\GitHub\FDA_Blood_Pump\Velocity_Dat
 #         df.drop(indexNames, inplace=True)
 #         return df
 
+#create class for cleaning dataframe. want to create parent class to call from. Indiv scripts to plot different profiles will call from parent
 class df_cleaner():
     def __init__(self, url):
         self.url = url
