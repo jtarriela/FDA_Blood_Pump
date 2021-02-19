@@ -10,6 +10,14 @@ class df_cleaner:
     def __init__(self, url):
         self.url = url
 
+
+    ##### incorporate if else to handle lists of dataframe string locations
+    # def compute_radius(self):
+    #     if isinstance(object, list):
+    #         ### for loop to compute below code and insert in dictionary???
+    #         for csv in df_cleaner:
+
+
     def compute_radius(self):
         df = pd.read_csv(self.url, index_col=0)
         df.insert(3, "radius", 0)
@@ -17,6 +25,7 @@ class df_cleaner:
         indexNames = df[(df['radius'] > 0.03)].index
         df.drop(indexNames, inplace=True)
         self.df = df
+
         return df
 
     ### Pass DF to velocity_plot() to plot velocity w.in same class
@@ -25,3 +34,5 @@ class df_cleaner:
         df_header_list = list(plot_df.columns.values)
         plot_df.plot(kind='scatter', x='radius', y=df_header_list[4], color='red')
         plt.show()
+
+
