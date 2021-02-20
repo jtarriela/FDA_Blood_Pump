@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 ### send data through in a dictionary and parse?
 ### https://stackoverflow.com/questions/42654934/need-of-using-r-before-path-name-while-reading-a-csv-file-with-pandas
 
+
 class df_cleaner:
     def __init__(self, url):
         self.url = url
@@ -30,6 +31,10 @@ class df_cleaner:
     #             indexNames = df[(df['radius'] > 0.03)].index
     #             df.drop(indexNames, inplace=True)
     #             self.df = df
+    def read_dataframe(self):
+        ### read dataframe
+        # for i in self.url_index:
+        #     df = pd.read_csv(self.url[i], index_col=0)
 
 
     def compute_radius(self):
