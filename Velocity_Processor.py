@@ -67,7 +67,7 @@ if __name__ == "__main__":
     url_df_2 = r'C:\Users\Joseph Tarriela\Documents\GitHub\FDA_Blood_Pump\Velocity_Data\K-omega_6L_2500\VelocityMagnitude-Q-1-k-omg.csv'
     url_df_3 = r'C:\Users\Joseph Tarriela\Documents\GitHub\FDA_Blood_Pump\Velocity_Data\K-omega_6L_2500\VelocityMagnitude-Q-1-k-omg.csv'
 
-    url_list = {url_df_1, url_df_2, url_df_3}
+    url_list = [url_df_1, url_df_2, url_df_3]
 
     for csv in url_list:
         df_obj = df_cleaner(csv)
