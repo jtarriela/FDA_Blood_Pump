@@ -7,29 +7,11 @@ import matplotlib.pyplot as plt
 ### to compute velocity plots for different test conditions
 
 class df_cleaner:
-    def __init__(self, url,chart_title):
+    def __init__(self, url, chart_title):
         self.url = url
         self.chart_title = chart_title
-        self.url_index = np.arange(0, len(url_list))
+        self.url_index = np.arange(0, len(self.url))
         self.master_df_list = [] # init dataframe to append in compute_radius
-
-    # ##### incorporate if else to handle lists of dataframe string locations
-    # # def compute_radius(self):
-    #     if isinstance(self.url, list):
-    #         ### create new sheets in new dataframe or list of dataframes
-    #         ### or pull columns into different lists and pass to velocity_plot
-    #
-    #         for csv in self.url:
-    #             df = pd.read_csv(self.url, index_col=0)
-    #             df.insert(3, "radius", 0)
-    #             df['radius'] = np.sqrt(df['    x-coordinate'] ** 2 + df['    y-coordinate'] ** 2)
-    #             indexNames = df[(df['radius'] > 0.03)].index
-    #             df.drop(indexNames, inplace=True)
-    #             self.df = df
-    # def read_dataframe(self):
-    #     ### read dataframe
-    #     # for i in self.url_index:
-    #     #     df = pd.read_csv(self.url[i], index_col=0)
 
     def compute_radius(self):
         for i in self.url_index:
@@ -60,28 +42,32 @@ class df_cleaner:
         plt.ylabel('Velocity (m/s)')
         plt.xlabel('Radius (m)')
         plt.title(self.chart_title)
-        return plt.show()
+        figure = plt.figure()
+
+        return figure
+
+
 
 
 ##class feature testing
 
-if __name__ == "__main__":
-    ### Define raw github path and insert into list // lets me work on mac when pushed
-    url_df_1 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
-    url_df_2 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
-    url_df_3 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
-    url_df_4 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
-    url_df_5 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
-    url_df_6 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
-
-    #### Function input always list
-    url_list = [url_df_1, url_df_2, url_df_3,url_df_4,url_df_5,url_df_6]
-    ### Insert Chart Title
-    vel_plot_title = "test title"
-
-    df_obj = df_cleaner(url_list,vel_plot_title)
-    df = df_obj.compute_radius()
-    df_plot = df_obj.velocity_plot()
+# if __name__ == "__main__":
+    # ### Define raw github path and insert into list // lets me work on mac when pushed
+    # url_df_1 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/Experimental_6L_2500/Q1_6L_2500.csv'
+    # url_df_2 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/Experimental_6L_2500/Q1_6L_2500.csv'
+    # url_df_3 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/Experimental_6L_2500/Q1_6L_2500.csv'
+    # url_df_4 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/Experimental_6L_2500/Q1_6L_2500.csv'
+    # url_df_5 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/Experimental_6L_2500/Q1_6L_2500.csv'
+    # url_df_6 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/Experimental_6L_2500/Q1_6L_2500.csv'
+    #
+    # #### Function input always list
+    # url_list = [url_df_1, url_df_2, url_df_3,url_df_4,url_df_5,url_df_6]
+    # ### Insert Chart Title
+    # vel_plot_title = "test title"
+    #
+    # df_obj = df_cleaner(url_list,vel_plot_title)
+    # df = df_obj.compute_radius()
+    # df_plot = df_obj.velocity_plot()
 
 
 
