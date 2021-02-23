@@ -7,8 +7,9 @@ import matplotlib.pyplot as plt
 ### to compute velocity plots for different test conditions
 
 class df_cleaner:
-    def __init__(self, url):
+    def __init__(self, url,chart_title):
         self.url = url
+        self.chart_title = chart_title
         self.url_index = np.arange(0, len(url_list))
         self.master_df_list = [] # init dataframe to append in compute_radius
 
@@ -58,24 +59,27 @@ class df_cleaner:
         plt.legend(df_column_names)
         plt.ylabel('Velocity (m/s)')
         plt.xlabel('Radius (m)')
+        plt.title(self.chart_title)
         return plt.show()
 
 
 ##class feature testing
 
 if __name__ == "__main__":
-    ### Define file paths and insert into list
-    url_df_1 = '/Users/jdtarriela/Documents/GitHub/FDA_Blood_Pump/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv'
-    url_df_2 = '/Users/jdtarriela/Documents/GitHub/FDA_Blood_Pump/Velocity_Data/K-omega_6L_2500/RMSEVelocityMagnitude-Q-1-k-omg.csv'
-    url_df_3 = '/Users/jdtarriela/Documents/GitHub/FDA_Blood_Pump/Velocity_Data/K-omega_6L_2500/VelocityMagnitude-Q-1-k-omg.csv'
-    url_df_4 = '/Users/jdtarriela/Documents/GitHub/FDA_Blood_Pump/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv'
-    url_df_5 = '/Users/jdtarriela/Documents/GitHub/FDA_Blood_Pump/Velocity_Data/K-omega_6L_2500/RMSEVelocityMagnitude-Q-1-k-omg.csv'
-    url_df_6 = '/Users/jdtarriela/Documents/GitHub/FDA_Blood_Pump/Velocity_Data/K-omega_6L_2500/VelocityMagnitude-Q-1-k-omg.csv'
+    ### Define raw github path and insert into list // lets me work on mac when pushed
+    url_df_1 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
+    url_df_2 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
+    url_df_3 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
+    url_df_4 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
+    url_df_5 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
+    url_df_6 = 'https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/main/Velocity_Data/K-omega_6L_2500/MeanVelocityMagnitude-Q-1-k-omg.csv?token=ASY7BN4772VJNDAFF6H7HYLAGRTU6'
 
+    #### Function input always list
+    url_list = [url_df_1, url_df_2, url_df_3,url_df_4,url_df_5,url_df_6]
+    ### Insert Chart Title
+    vel_plot_title = "test title"
 
-    url_list = [url_df_1, url_df_2, url_df_3,url_df_4,url_df_5,url_df_6]     #### Function input always list
-
-    df_obj = df_cleaner(url_list)
+    df_obj = df_cleaner(url_list,vel_plot_title)
     df = df_obj.compute_radius()
     df_plot = df_obj.velocity_plot()
 
