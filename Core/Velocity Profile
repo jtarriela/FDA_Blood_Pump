@@ -1,0 +1,4 @@
+Velocity Profile 
+
+2.5L
+-787815359684608[m^-5 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**6+11616459812768[m^-4 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**5-64044358919.0[m^-3 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**4+160095165.81543[m^-2 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**3-182007.671656609[m^-1 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**2+49.44690373633050[s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))+1.14697552722373[m s^-1]

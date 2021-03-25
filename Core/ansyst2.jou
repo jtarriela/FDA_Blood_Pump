@@ -1,0 +1,7 @@
+/file/read-case-data k-om_6L_2500.cas.h5
+/file/auto-save/data-frequency 200 
+/file/auto-save/case-frequency if-case-is-modified 
+/solve/iterate 2000
+
+wd "KO-SS-complete.dat"
+exit
