@@ -2,6 +2,7 @@
  
 ANSYS Fluent 2020R1<br>
 Files for mesh convergence study. <br>
+Note in residual notebook datasets:: Last 200 datapoints to be truncated
 
 ## Initial Conditions
 ***
@@ -16,7 +17,8 @@ Surface Roughness: 0.6um
 Newtownian Fluid<br>
 Steady State<br>
 K-omega SST <br>
-10000 iterations <br>
+Flow Equations: 5000 iterations <br>
+Hemolysis Equations: 200 iterations <br>
 Mesh: 7.5, 9.5, 12.3 million cells <br>
 Moving Reference Frame <br> 
 ***
@@ -34,22 +36,26 @@ Profile: <br>
 ***
 ### Surfaces
 #### Quadrant 1 Line:
-x0 = 0m
-y0 = 0m 
-z0 = 0.006562m
-x1 = 0.03m
-y1 = -0.03m
-z1 = z0 = 0.006562m
+***
+x0 = 0m <br>
+y0 = 0m <br>
+z0 = 0.006562m <br>
+x1 = 0.03m <br>
+y1 = -0.03m <br>
+z1 = z0 = 0.006562m <br>
 #### Quadrant 2 Line:
-x0 = 0m
-y0 = 0m 
-z0 = 0.006562m
-x1 = -0.03m
-y1 = -0.03m
-z1 = z0 = 0.006562m
+***
+x0 = 0m <br>
+y0 = 0m <br>
+z0 = 0.006562m <br>
+x1 = -0.03m <br>
+y1 = -0.03m <br>
+z1 = z0 = 0.006562m <br>
 #### Blade Passsage Plane:
+***
 z = 0.006562m
 #### ZX Outlet Plane:
+***
 y = -0.027805m
 
 
