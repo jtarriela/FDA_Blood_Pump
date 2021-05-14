@@ -4,9 +4,8 @@ ANSYS Fluent 2020R1<br>
 Files for mesh convergence study. <br>
 Note in residual notebook datasets:: Last 200 datapoints to be truncated
 
-## Initial Conditions
 ***
-#### FDA Conditions 1 <br>
+### FDA Conditions 1 <br>
 2.5 L/min <br>
 2500 RPM<br>
 Density: 1056 kg/m3<br>
@@ -19,7 +18,7 @@ Steady State<br>
 K-omega SST <br>
 Flow Equations: 5000 iterations <br>
 Hemolysis Equations: 200 iterations <br>
-Mesh: 7.5, 9.5, 12.3 million cells <br>
+Mesh: 8,148,886, 10,972,801, 13,710,866  cells <br>
 Moving Reference Frame <br> 
 ***
 ### Boundary Conditions
@@ -36,7 +35,6 @@ Profile: <br>
 ***
 ### Surfaces
 #### Quadrant 1 Line:
-***
 x0 = 0m <br>
 y0 = 0m <br>
 z0 = 0.006562m <br>
@@ -44,7 +42,6 @@ x1 = 0.03m <br>
 y1 = -0.03m <br>
 z1 = z0 = 0.006562m <br>
 #### Quadrant 2 Line:
-***
 x0 = 0m <br>
 y0 = 0m <br>
 z0 = 0.006562m <br>
@@ -52,10 +49,16 @@ x1 = -0.03m <br>
 y1 = -0.03m <br>
 z1 = z0 = 0.006562m <br>
 #### Blade Passsage Plane:
-***
 z = 0.006562m
 #### ZX Outlet Plane:
-***
 y = -0.027805m
+***
+#### Steady State Observations & Conclusions:
+The medium appears to converge more tightly and oscillate at a greater frequency than the coarse and fine meshes with respect to pressure and mass flux. <br>
+* Simple moving average would be useful in averaging out oscillations for residual and quantity monitors. 
+  A sliding window would be useful in cutting off iteration points of no interest. 
+  Currently thinking that iterations 1000-5000 are appropriate for analysis.
+* Oscillations would be reduced by manually controlling relaxation factors.
 
-
+Velocity slice data needs to be compared with respect to experimental data to make better conclusions on the accuracy of simulations.<br>
+Currently the study is inconclusive as the residual monitors must be averaged out, velocity data must be compared with simulations.
