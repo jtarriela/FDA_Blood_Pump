@@ -23,6 +23,7 @@ class mesh_conv_df_parser():
                                        header=1,
                                        skiprows=[2],
                                        delim_whitespace=True)
+
         return max_vel_rotor_df
 
     def total_p_monitor(self):
@@ -65,6 +66,21 @@ class mesh_conv_df_parser():
         Q2_velocity_df.drop(Q2_velocity_df[Q2_velocity_df['Radius (m)'] > 0.03].index, inplace=True)
         return Q2_velocity_df
 
+    def SMA(self, df, window_size,col_name, df_iteration_truncation = None):
+
+        if df_iteration_truncation is not None:
+            sma_df = df
+            sma_df.drop(sma_df[sma_df['Iteration'] > df_iteration_truncation].index, inplace=True)
+        else:
+            sma_df = df # nothing else is supposed to happen
+        col_list = sma_df.columns[0:].copy()
+        # col_list.get_loc('col_name')
+
+        sma_df[col_name+'_SMA'] = sma_df.iloc[:, col_list.get_loc(col_name)].rolling(window=window_size).mean()
+        # self.SMA_data['pandas_SMA'] = self.SMA_data.iloc[:, 1].rolling(window=self.SMA_points).mean()
+        return sma_df
+
+
 if __name__ == "__main__":
     dataset_link_dict = {
         'Mass_Flux': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Residual%20Data/Coarse/mass-flux.out",
@@ -81,3 +97,6 @@ if __name__ == "__main__":
     Q1_vel = parser.Q1_vel_slice()
     total_p = parser.total_p_monitor()
     max_vel = parser.max_vel_monitor()
+
+    max_vel_SMA = parser.SMA(max_vel, 100, 'max-vel-rotor',5000)
+    # col_list = max_vel.columns[0:].copy()
