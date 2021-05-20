@@ -62,3 +62,17 @@ The medium appears to converge more tightly and oscillate at a greater frequency
 
 Velocity slice data needs to be compared with respect to experimental data to make better conclusions on the accuracy of simulations.<br>
 Currently the study is inconclusive as the residual monitors must be averaged out, velocity data must be compared with simulations.
+***
+#### Transient Settings:
+Number Blade Passage per Rev: 4 <br>
+Steps per Blade Passage: 50<br>
+Steps per Rev: 200<br>
+
+RPM Condition 1: 2500<br>
+RPS: 41.66-<br>
+Min/Rev: 0.0004<br>
+Sec/Rev: 0.024<br>
+Timestep: 0.00012 sec <br>
+
+Set 10 revolutions for numerical transience (10 rev * 200 step/rev)= 2000
+set 10 revolutions for data sampling
