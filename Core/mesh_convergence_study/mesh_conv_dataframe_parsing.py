@@ -3,13 +3,15 @@ import numpy as np
 import math
 
 class mesh_conv_df_parser():
-    def __init__(self, Mass_Flux = None, Max_Velocity = None, Total_Pressure_In = None, Total_Pressure_Out = None, Q1_Velocity = None, Q2_Velocity = None):
+    def __init__(self, Mass_Flux = None, Max_Velocity = None, Total_Pressure_In = None, Total_Pressure_Out = None, Q1_Velocity = None, Q2_Velocity = None, Unsteady_Q1 = None, Unsteady_Q2 = None):
         self.mass_flux_link = Mass_Flux
         self.max_vel_link = Max_Velocity
         self.total_p_in_link = Total_Pressure_In
         self.total_p_out_link = Total_Pressure_Out
         self.q1_vel_link = Q1_Velocity
         self.q2_vel_link = Q2_Velocity
+        self.unsteady_q1 = Unsteady_Q1
+        self.unsteady_q2 = Unsteady_Q2
 
     def mass_flux_monitor(self):
         mass_flux_df = pd.read_csv(self.mass_flux_link,
@@ -35,7 +37,6 @@ class mesh_conv_df_parser():
                                   header=1,
                                   skiprows=[2],
                                   delim_whitespace=True)
-
         density = 1056  # kg/m3
         gravity = 9.81  # m/s2
         total_pressure_df = pd.DataFrame()
@@ -66,6 +67,26 @@ class mesh_conv_df_parser():
         Q2_velocity_df.drop(Q2_velocity_df[Q2_velocity_df['Radius (m)'] > 0.03].index, inplace=True)
         return Q2_velocity_df
 
+    def unsteady_Q1_vel_slice(self):
+        unsteady_Q1_velocity_df = pd.read_csv(self.unsteady_q1, header=1, skiprows=[1], delim_whitespace=True)
+        unsteady_Q1_velocity_df = unsteady_Q1_velocity_df.rename(columns={'((xy/key/label': 'Position (m)', 'quadrant-1)': 'Unsteady Velocity Magnitude (m/s)'})
+        unsteady_Q1_velocity_df.dropna(subset=['Unsteady Velocity Magnitude (m/s)'], inplace=True)
+        unsteady_Q1_velocity_df['Position (m)'] = unsteady_Q1_velocity_df['Position (m)'].astype(float)
+        unsteady_Q1_velocity_df['Radius (m)'] = np.sqrt((unsteady_Q1_velocity_df['Position (m)'] ** 2) * 2)
+        unsteady_Q1_velocity_df = unsteady_Q1_velocity_df.sort_values(by='Radius (m)', ascending=True)
+        unsteady_Q1_velocity_df.drop(unsteady_Q1_velocity_df[unsteady_Q1_velocity_df['Radius (m)'] > 0.03].index, inplace=True)
+        return unsteady_Q1_velocity_df
+
+    def unsteady_Q2_vel_slice(self):
+        unsteady_Q2_velocity_df = pd.read_csv(self.unsteady_q2, header=1, skiprows=[1], delim_whitespace=True)
+        unsteady_Q2_velocity_df = unsteady_Q2_velocity_df.rename(columns={'((xy/key/label': 'Position (m)', 'quadrant-2)': 'Unsteady Velocity Magnitude (m/s)'})
+        unsteady_Q2_velocity_df.dropna(subset=['Unsteady Velocity Magnitude (m/s)'], inplace=True)
+        unsteady_Q2_velocity_df['Position (m)'] = unsteady_Q2_velocity_df['Position (m)'].astype(float)
+        unsteady_Q2_velocity_df['Radius (m)'] = np.sqrt((unsteady_Q2_velocity_df['Position (m)'] ** 2) * 2)
+        unsteady_Q2_velocity_df = unsteady_Q2_velocity_df.sort_values(by='Radius (m)', ascending=True)
+        unsteady_Q2_velocity_df.drop(unsteady_Q2_velocity_df[unsteady_Q2_velocity_df['Radius (m)'] > 0.03].index, inplace=True)
+        return unsteady_Q2_velocity_df
+
     def SMA(self, df, window_size,col_name, df_iteration_truncation = None):
 
         if df_iteration_truncation is not None:
@@ -82,21 +103,25 @@ class mesh_conv_df_parser():
 
 
 if __name__ == "__main__":
-    dataset_link_dict = {
-        'Mass_Flux': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Residual%20Data/Coarse/mass-flux.out",
-        'Max_Velocity': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Residual%20Data/Coarse/max-vel-rotor.out",
-        'Total_Pressure_In': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Residual%20Data/Coarse/pressure-in.out",
-        'Total_Pressure_Out': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Residual%20Data/Coarse/pressure-out.out",
-        'Q1_Velocity': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Quantity%20Data/Coarse/vel-q1",
-        'Q2_Velocity': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Quantity%20Data/Coarse/vel-q2"}
+    fine_dict = {
+        'Mass_Flux': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Residual%20Data/High/mass-flux.out",
+        'Max_Velocity': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Residual%20Data/High/max-vel-rotor.out",
+        'Total_Pressure_In': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Residual%20Data/High/pressure-in.out",
+        'Total_Pressure_Out': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Residual%20Data/High/pressure-out.out",
+        'Q1_Velocity': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Quantity%20Data/High/vel-q1",
+        'Q2_Velocity': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Quantity%20Data/High/vel-q2",
+        'Unsteady_Q1': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Quantity%20Data/Coarse/unsteady_vel_mag_q1",
+        'Unsteady_Q2': "https://raw.githubusercontent.com/jtarriela/FDA_Blood_Pump/mesh_convergence_study/Core/mesh_convergence_study/Convergence%20Data/Quantity%20Data/Coarse/unsteady_vel_mag_q2"}
 
-    parser = mesh_conv_df_parser(**dataset_link_dict)
+    parser = mesh_conv_df_parser(**fine_dict)
 
     mass_flux = parser.mass_flux_monitor()
     Q2_vel = parser.Q2_vel_slice()
     Q1_vel = parser.Q1_vel_slice()
     total_p = parser.total_p_monitor()
     max_vel = parser.max_vel_monitor()
+    unst_q1 = parser.unsteady_Q1_vel_slice()
+    unst_q2 = parser.unsteady_Q2_vel_slice()
 
     max_vel_SMA = parser.SMA(max_vel, 100, 'max-vel-rotor',5000)
     # col_list = max_vel.columns[0:].copy()
