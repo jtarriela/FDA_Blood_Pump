@@ -1,0 +1,149 @@
+;##########   Mesh Convergence Study   ##########;
+/file/set-tuiversion "20.1"
+
+/file/read-case blood_pump_fine.cas.h5
+
+;##########   MODEL & SOLVER SETTINGS   ##########;
+/define/models/viscous/kw-sst yes
+
+;##########   Set Steady State Form   ##########;
+/define/models/steady yes ;STEADY STATE
+
+;##########   INCOMPRESSIBLE FLOW:: PRESSURE BASED SOLVER  ##########;
+/define/models/solver/density-based-implicit yes
+
+;##########   Velocity Inlet Boundary Conditions  ##########;
+/define/boundary-conditions/velocity-inlet inlet no no yes yes no 40 no 0 no yes 5 4.136 no 0
+
+;##########   Pressure Outlet Boundary Conditions  ##########;
+/define/boundary-conditions/pressure-outlet outlet yes no 0 no yes no yes 5 4.136 yes no no no
+
+;##########   Define Moving Walls, Wall Roughness, Wall Flux  ##########;
+/define/boundary-conditions/wall top no no no no 0 no 0.5
+/define/boundary-conditions/wall car_body no no no no 0 no 0.5
+/define/boundary-conditions/wall ground_slip no yes shear-bc-spec-shear no no 0 no 0.5 no 0 no 0 no 0
+/define/boundary-conditions/wall ground_no_slip no no no no 0 no 0.5
+/define/boundary-conditions/wall side no no no no 0 no 0.5
+
+
+/solve/set/flux-type 0 ; Roe-FDS
+
+;/solve/set> flux-type 3; (Low Diffusion Roe-FDS) Low diffusion Roe-FDS is used when the LES viscous model is enabled. It reduces the dissipation in LES calculations and is used only for subsonic flows.
+
+/solve/set/discretization-scheme/amg-c 1 ;
+/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
+/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
+
+;##########   Normalized LINE SURFACES   ##########;
+/surface/line-surface x/l_-1 -0.201 0 0 -0.201 0 2
+/surface/line-surface x/l_-0.9 -0.1809 0 0 -0.1809 0 2
+/surface/line-surface x/l_-0.8 -0.1608 0 0 -0.1608 0 2
+/surface/line-surface x/l_-0.7 -0.1407 0 0 -0.1407 0 2
+/surface/line-surface x/l_-0.6 -0.1206 0 0 -0.1206 0 2
+/surface/line-surface x/l_-0.5 -0.1005 0 0 -0.1005 0 2
+/surface/line-surface x/l_-0.4 -0.0804 0 0 -0.0804 0 2
+/surface/line-surface x/l_-0.3 -0.0603 0 0 -0.0603 0 2
+/surface/line-surface x/l_-0.2 -0.0402 0 0 -0.0402 0 2
+/surface/line-surface x/l_-0.1 -0.0201 0 0 -0.0201 0 2
+/surface/line-surface x/l_0 0 0 0 0 0 2
+/surface/line-surface x/l_0.1 0.0201 0 0 0.0201 0 2
+/surface/line-surface x/l_0.2 0.0402 0 0 0.0402 0 2
+/surface/line-surface x/l_0.3 0.0603 0 0 0.0603 0 2
+/surface/line-surface x/l_0.4 0.0804 0 0 0.0804 0 2
+/surface/line-surface x/l_0.5 0.1005 0 0 0.1005 0 2
+/surface/line-surface x/l_0.6 0.1206 0 0 0.1206 0 2
+/surface/line-surface x/l_0.7 0.1407 0 0 0.1407 0 2
+/surface/line-surface x/l_0.8 0.1608 0 0 0.1608 0 2
+/surface/line-surface x/l_0.9 0.1809 0 0 0.1809 0 2
+/surface/line-surface x/l_1 0.201 0 0 0.201 0 2
+/surface/line-surface x/l_1.1 0.2211 0 0 0.2211 0 2
+/surface/line-surface x/l_1.2 0.2412 0 0 0.2412 0 2
+/surface/line-surface x/l_1.3 0.2613 0 0 0.2613 0 2
+/surface/line-surface x/l_1.4 0.2814 0 0 0.2814 0 2
+/surface/line-surface x/l_1.5 0.3015 0 0 0.3015 0 2
+/surface/line-surface x/l_1.6 0.3216 0 0 0.3216 0 2
+/surface/line-surface x/l_1.7 0.3417 0 0 0.3417 0 2
+/surface/line-surface x/l_1.8 0.3618 0 0 0.3618 0 2
+/surface/line-surface x/l_1.9 0.3819 0 0 0.3819 0 2
+/surface/line-surface x/l_2 0.402 0 0 0.402 0 2
+
+
+/surface/line-surface quadrant-2 0 0 0.006562 -0.03 -0.03 0.006562
+/surface/plane-surface blade-passage xy-plane 0.006562
+
+
+;##########   Convergence Criteria   ##########;
+/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.000000001 0.000000001
+
+;##########   Report Definition Monitors   ##########;
+/solve/report-definitions/add p-in surface-areaavg surface-names inlet () field pressure ()
+/solve/report-definitions/add p-out surface-areaavg surface-names outlet () field pressure ()
+/solve/report-definitions/add mass-flux flux-massflow zone-names inlet outlet () ()
+/solve/report-definitions/add max-vel volume-max zone-names enclosure () field velocity-magnitude ()
+
+;##########   Report Files   ##########;
+/solve/report-files/add/p-in active yes frequency 1 print yes report-defs p-in () file-name pressure-in ()
+/solve/report-files/add/p-out active yes frequency 1 print yes report-defs p-out () file-name pressure-out ()
+/solve/report-files/add/mass-flux active yes frequency 1 print yes report-defs mass-flux () file-name mass-flux ()
+/solve/report-files/add/max-vel-rotor active yes frequency 1 print yes report-defs max-vel-rotor () file-name max-vel-rotor ()
+
+
+
+;##########   Disable UDS Equations   ##########;
+/solve/set/equations uds-0 no
+/solve/set/equations uds-1 no
+
+;##########   INITIALIZE CASE   ##########;
+/solve/initialize/hyb-initialization
+
+/file/write-case-data "blood_pump_fine_out_1.cas.h5"
+
+;##########   Solve Steady State   ##########;
+/solve/iterate/5000
+
+;##########   Disable UDS Equations   ##########;
+/solve/set/equations uds-0 yes
+/solve/set/equations uds-1 yes
+/solve/set/equations flow no
+/solve/set/equations kw no
+
+;##########   Solve UDS Steady State   ##########;
+/solve/iterate/5000
+
+;##########   Plot Data  ##########;
+plot/plot/no Cumulative_dataset no yes 0 0 1 no no x-velocity x/l_-1 x/l_-0.9 x/l_-0.8 x/l_-0.7 x/l_-0.6 x/l_-0.5 x/l_-0.4 x/l_-0.3 x/l_-0.2 x/l_-0.1 x/l_0 x/l_0.1 x/l_0.2 x/l_0.3 x/l_0.4 x/l_0.5 x/l_0.6 x/l_0.7 x/l_0.8 x/l_0.9 x/l_1 x/l_1.1 x/l_1.2 x/l_1.3 x/l_1.4 x/l_1.5 x/l_1.6 x/l_1.7 x/l_1.8 x/l_1.9 x/l_2
+plot/plot/no vel_vs_zpos_x/l_-1 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_-0.9 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_-0.8 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_-0.7 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_-0.6 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_-0.5 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_-0.4 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_-0.3 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_-0.2 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_-0.1 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_0 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_0.1 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_0.2 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_0.3 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_0.4 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_0.5 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_0.6 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_0.7 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_0.8 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_0.9 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_1 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_1.1 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_1.2 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_1.3 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_1.4 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_1.5 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_1.6 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_1.7 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_1.8 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_1.9 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_2 no yes 0 0 1 no no
+
+/file/write-case-data "blood_pump_fine_out_2.cas.h5"
+
+exit
