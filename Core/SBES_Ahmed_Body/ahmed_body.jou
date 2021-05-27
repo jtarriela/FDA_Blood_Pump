@@ -1,7 +1,7 @@
 ;##########   Mesh Convergence Study   ##########;
 /file/set-tuiversion "20.1"
 
-/file/read-case blood_pump_fine.cas.h5
+/file/read-case ahmed_body.cas.h5
 
 ;##########   MODEL & SOLVER SETTINGS   ##########;
 /define/models/viscous/kw-sst yes
@@ -96,7 +96,7 @@
 ;##########   INITIALIZE CASE   ##########;
 /solve/initialize/hyb-initialization
 
-/file/write-case-data "blood_pump_fine_out_1.cas.h5"
+/file/write-case-data "ahmed_body_case_init.cas.h5"
 
 ;##########   Solve Steady State   ##########;
 /solve/iterate/5000
@@ -112,38 +112,39 @@
 
 ;##########   Plot Data  ##########;
 plot/plot/no Cumulative_dataset no yes 0 0 1 no no x-velocity x/l_-1 x/l_-0.9 x/l_-0.8 x/l_-0.7 x/l_-0.6 x/l_-0.5 x/l_-0.4 x/l_-0.3 x/l_-0.2 x/l_-0.1 x/l_0 x/l_0.1 x/l_0.2 x/l_0.3 x/l_0.4 x/l_0.5 x/l_0.6 x/l_0.7 x/l_0.8 x/l_0.9 x/l_1 x/l_1.1 x/l_1.2 x/l_1.3 x/l_1.4 x/l_1.5 x/l_1.6 x/l_1.7 x/l_1.8 x/l_1.9 x/l_2
-plot/plot/no vel_vs_zpos_x/l_-1 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_-0.9 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_-0.8 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_-0.7 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_-0.6 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_-0.5 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_-0.4 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_-0.3 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_-0.2 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_-0.1 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_0 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_0.1 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_0.2 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_0.3 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_0.4 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_0.5 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_0.6 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_0.7 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_0.8 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_0.9 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_1 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_1.1 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_1.2 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_1.3 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_1.4 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_1.5 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_1.6 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_1.7 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_1.8 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_1.9 no yes 0 0 1 no no
-plot/plot/no vel_vs_zpos_x/l_2 no yes 0 0 1 no no
+plot/plot/no vel_vs_zpos_x/l_-1 no yes 0 0 1 no no x-velocity x/l_-1 ()
+plot/plot/no vel_vs_zpos_x/l_-0.9 no yes 0 0 1 no no x-velocity x/l_-0.9 ()
+plot/plot/no vel_vs_zpos_x/l_-0.8 no yes 0 0 1 no no x-velocity x/l_-0.8 ()
+plot/plot/no vel_vs_zpos_x/l_-0.7 no yes 0 0 1 no no x-velocity x/l_-0.7 ()
+plot/plot/no vel_vs_zpos_x/l_-0.6 no yes 0 0 1 no no x-velocity x/l_-0.6 ()
+plot/plot/no vel_vs_zpos_x/l_-0.5 no yes 0 0 1 no no x-velocity x/l_-0.5 ()
+plot/plot/no vel_vs_zpos_x/l_-0.4 no yes 0 0 1 no no x-velocity x/l_-0.4 ()
+plot/plot/no vel_vs_zpos_x/l_-0.3 no yes 0 0 1 no no x-velocity x/l_-0.3 ()
+plot/plot/no vel_vs_zpos_x/l_-0.2 no yes 0 0 1 no no x-velocity x/l_-0.2 ()
+plot/plot/no vel_vs_zpos_x/l_-0.1 no yes 0 0 1 no no x-velocity x/l_-0.1 ()
+plot/plot/no vel_vs_zpos_x/l_0 no yes 0 0 1 no no x-velocity x/l_0 ()
+plot/plot/no vel_vs_zpos_x/l_0.1 no yes 0 0 1 no no x-velocity x/l_0.1 ()
+plot/plot/no vel_vs_zpos_x/l_0.2 no yes 0 0 1 no no x-velocity x/l_0.2 ()
+plot/plot/no vel_vs_zpos_x/l_0.3 no yes 0 0 1 no no x-velocity x/l_0.3 ()
+plot/plot/no vel_vs_zpos_x/l_0.4 no yes 0 0 1 no no x-velocity x/l_0.4 ()
+plot/plot/no vel_vs_zpos_x/l_0.5 no yes 0 0 1 no no x-velocity x/l_0.5 ()
+plot/plot/no vel_vs_zpos_x/l_0.6 no yes 0 0 1 no no x-velocity x/l_0.6 ()
+plot/plot/no vel_vs_zpos_x/l_0.7 no yes 0 0 1 no no x-velocity x/l_0.7 ()
+plot/plot/no vel_vs_zpos_x/l_0.8 no yes 0 0 1 no no x-velocity x/l_0.8 ()
+plot/plot/no vel_vs_zpos_x/l_0.9 no yes 0 0 1 no no x-velocity x/l_0.9 ()
+plot/plot/no vel_vs_zpos_x/l_1 no yes 0 0 1 no no x-velocity x/l_1 ()
+plot/plot/no vel_vs_zpos_x/l_1.1 no yes 0 0 1 no no x-velocity x/l_1.1 ()
+plot/plot/no vel_vs_zpos_x/l_1.2 no yes 0 0 1 no no x-velocity x/l_1.2 ()
+plot/plot/no vel_vs_zpos_x/l_1.3 no yes 0 0 1 no no x-velocity x/l_1.3 ()
+plot/plot/no vel_vs_zpos_x/l_1.4 no yes 0 0 1 no no x-velocity x/l_1.4 ()
+plot/plot/no vel_vs_zpos_x/l_1.5 no yes 0 0 1 no no x-velocity x/l_1.5 ()
+plot/plot/no vel_vs_zpos_x/l_1.6 no yes 0 0 1 no no x-velocity x/l_1.6 ()
+plot/plot/no vel_vs_zpos_x/l_1.7 no yes 0 0 1 no no x-velocity x/l_1.7 ()
+plot/plot/no vel_vs_zpos_x/l_1.8 no yes 0 0 1 no no x-velocity x/l_1.8 ()
+plot/plot/no vel_vs_zpos_x/l_1.9 no yes 0 0 1 no no x-velocity x/l_1.9 ()
+plot/plot/no vel_vs_zpos_x/l_2 no yes 0 0 1 no no x-velocity x/l_2 ()
 
-/file/write-case-data "blood_pump_fine_out_2.cas.h5"
+/file/write-case-data "ahmed_body_SS.cas.h5"
 
 exit
+quit
