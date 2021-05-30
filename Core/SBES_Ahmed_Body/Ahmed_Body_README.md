@@ -46,5 +46,14 @@ Expansion Rate 1.15
 Spatial Resolution l0
 
 temporal resolution
+***
+### Meshing Notes and Procedure Post SS<br>
+Refine y+ mesh adaption to Y+ <=1 <br>
+Journal code adds integral length scale, l0 to delta ratio, and timestep CFF & surface generation. <br>
+* 5 cells for l0 resolves 80% of k
+* 10-12 cells resolves 90% of k 
+* - l0_to_delta_ratio contour plot to see
+* time_scale contour plot to see smallest time scales to be used for CFL<=1. 
+* - Timestep= 1E-5
 
 
