@@ -37,10 +37,20 @@ Nondimensional Timestep dt*Vinf/Lb = 0.002 <br>
 Time averaging after 77 Transit Times
 
 ***
-### Meshing Notes and Procedure <br>
-Boundry Layer 20 cells
-y+ = 1
+### Mesh 2<br>
+Boundry Layer 15 cells
 Expansion Rate 1.15
+
+13.9M Cells 
+
+2 BOI
+* Wake 15mm cells<br>
+* Immediate area around body 6mm 
+* Face size on walls 4mm
+
+
+Target y+ = 1
+
 
 
 Spatial Resolution l0
