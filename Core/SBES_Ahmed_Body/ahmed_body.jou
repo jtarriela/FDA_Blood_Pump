@@ -270,10 +270,11 @@ solve/monitors/force/set-lift-monitor lift-monitor yes car_body () yes yes lift-
 
 /define/custom-field-functions/define "integral_length_scale" turb_kinetic_energy * sqrt(turb_kinetic_energy)/(turb_diss_rate+0.000000000000001)
 /define/custom-field-functions/define "l0_to_delta_ratio" integral_length_scale / cell_volume^(1/3)
+/define/custom-field-functions/define "test_courant2" cell_volume^(1/3)*.00001/(*velocity_magnitude)
 /plot/histogram/ y-plus 0 50 25 no car_body ()
 ####################################
 
-define/models/viscous> kw-sst yes
+/define/models/viscous kw-sst yes
 
 /define/models/viscous/turbulence-expert/turb-add-sbes-sdes yes
 /define/models/viscous/turbulence-expert/sbes-sdes-hybrid-model 2
