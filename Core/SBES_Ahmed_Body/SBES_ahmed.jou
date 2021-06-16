@@ -11,27 +11,37 @@
 /define/models/viscous/turbulence-expert/sbes-sgs-option 3
 
 
-/solve/set/discretization-scheme/amg-c 7
+;SIMPLEC
+/solve/set/p-v-coupling 21
 
-/file/write-case-data "Ahmed_body_SBES_init"
+;CHANGE UNDER RELAXATION TO NEAR 1
+/solve/set/under-relaxation/pressure 0.8
+/solve/set/under-relaxation/mom 0.8
+
+/solve/set/discretization-scheme/pressure 12 ;SECOND ORDER PRESSURE
+/solve/set/discretization-scheme/mom 7 ;BOUNDED CENTRAL DIFFERENCING
+/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
+/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
 
 /solve/set/time-step 0.00001
 
 /solve/set/reporting-interval 1
 
-/solve/dual-time-iterate 100 1000 ;[max timesteps, iterations per step]
+/solve/dual-time-iterate 100 300;[max timesteps, iterations per step]
+
+
+/file/write-case-data "Ahmed_body_SBES_M4_100iteration.cas.h5"
+
 
 /solve/set/data-sampling yes 10 yes yes
 
-/solve/dual-time-iterate 100 1000 ;[max timesteps, iterations per step]
+/solve/dual-time-iterate 500 5000 ;[max timesteps, iterations per step]
+
+/parallel/timer/usage
 
 /report/summary "Report_Transient_Simulation.txt"
 
-file/save-case-data "Ahmed_body_SBES_completed"
-
-/plot/plot/no Cumulative_dataset no yes 0 0 1 no no x-velocity x/l_-1 x/l_-0.9 x/l_-0.8 x/l_-0.7 x/l_-0.6 x/l_-0.5 x/l_-0.4 x/l_-0.3 x/l_-0.2 x/l_-0.1 x/l_0 x/l_0.1 x/l_0.2 x/l_0.3 x/l_0.4 x/l_0.5 x/l_0.6 x/l_0.7 x/l_0.8 x/l_0.9 x/l_1 x/l_1.1 x/l_1.2 x/l_1.3 x/l_1.4 x/l_1.5 x/l_1.6 x/l_1.7 x/l_1.8 x/l_1.9 x/l_2 ()
-
-/parallel/timer/usage
+/file/write-case-data "Ahmed_body_SBES_M4_Complete.cas.h5"
 
 
 quit
