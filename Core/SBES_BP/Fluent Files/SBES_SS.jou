@@ -51,7 +51,6 @@
 
 ;##########   Define Moving Walls, Wall Roughness, Wall Flux  ##########;
 /define/boundary-conditions/wall rotor_body yes motion-bc-moving no no no yes no no 0.0000006 no 0.5 yes yes no 0 no 0 no "rotor_speed" 0 0 0 0 0 1
-
 /define/boundary-conditions/wall inflow_wall no no no no 0.0000006 no 0.5 yes yes no 0 no 0
 /define/boundary-conditions/wall volute_wall no no no no 0.0000006 no 0.5 yes yes no 0 no 0
 /define/boundary-conditions/wall rotor_wall no no no no 0.0000006 no 0.5 yes yes no 0 no 0

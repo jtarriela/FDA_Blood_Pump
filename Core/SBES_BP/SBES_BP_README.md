@@ -56,11 +56,11 @@ y = -0.027805m
 #### Steady State Observations & Conclusions:
 Initial SS simulation 24M mesh:
 * L0/delta ratio revealed that area trailing rotors not sufficiently resolved (L0<5) for LES switch.
-* Global courant number > 1 :: Timestep = 5E-6 sec <br> <br>
+* Global courant number > 1 :: Timestep = 1E-5 sec <br> <br>
 
 Initial SS simulation 48M mesh: 
 * Resolution is improved. Learnings from Ahmed body applied. Switched to URANS for further analysis of L0 ratio.  
-* Global courant number > 1 :: Timestep = 3e-6E- sec
+* Global courant number > 1 :: Timestep = 5e-6E sec or 
 * y+<1 :: 0.9120703
 #### URANS Observations & Conclusions:
 Initial URANS simulation 48M mesh:
@@ -68,6 +68,28 @@ Initial URANS simulation 48M mesh:
 #### Changes for SBES:
 * Enable UDS equations
 * Shear Stress eqn validation
-* 
+###
+| Mesh Size | Iteration/hr (72 cores) | 
+| --------------:|---------------:|
+| 24M | 57 |
+| 38M | _ |
+| 48M | 35 |
+
+| Mesh Size | Iteration/hr (120 cores) | 
+| --------------:|---------------:|
+| 24M | 75 |
+| 38M | _ |
+| 48M | 36 |
+
+	
+| Timestep Size | Timesteps per Blade Revolution | Timestep per Rotation |e
+| --------------:|---------------:|---------------:|
+| 5E-5s | 300 | 1200 |
+| 1E-5s | 600 | 2400 |
+| 5E-6s | 1200 | 4800 |
+| 1E-6s | 2200 | 9500 |
+
+sample for 5 rev every blade pass
+
 ***
 
