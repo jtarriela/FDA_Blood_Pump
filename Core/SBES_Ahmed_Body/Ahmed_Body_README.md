@@ -78,7 +78,11 @@ Notes <br>
 -- what is that line graph called where the scatter plots are aligned
   
 - Create categorical scatter plot 
-- 
-  
+-
+***
+Changes <br>
+- Found that previous run did not have BCD for momentum discretization
+- switched to SIMPLEC && under-relaxation for pressure & mom = 0.8
+- SHOULD CHANGE:: Pressure outlet to avg pressure out. did not change for this run
 
 

@@ -16,6 +16,8 @@
 /define/custom-field-functions/define "k_sgs_wale" ((0.5*(cell-volume^(1/3))*strain-rate-mag)^2)/3
 /define/custom-field-functions/define "percent_k_resolved" k-resolved/(k_resolved+k_sgs_wale)*100
 
+/define/custom-field-functions/define "percent_k_resolved" k-resolved/(k_resolved+k_sgs_wale)*100
+
 
 ;SIMPLEC
 /solve/set/p-v-coupling 21

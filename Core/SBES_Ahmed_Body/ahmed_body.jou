@@ -267,10 +267,13 @@ solve/monitors/force/set-lift-monitor lift-monitor yes car_body () yes yes lift-
 /solve/cell-registers/refine yplus
 
 /define/custom-field-functions/define "time_scale" cell_volume^(1/3)/(velocity_magnitude + 0.000000000000001)
-
 /define/custom-field-functions/define "integral_length_scale" turb_kinetic_energy * sqrt(turb_kinetic_energy)/(turb_diss_rate+0.000000000000001)
 /define/custom-field-functions/define "l0_to_delta_ratio" integral_length_scale / cell_volume^(1/3)
 /define/custom-field-functions/define "test_courant2" cell_volume^(1/3)*.00001/(*velocity_magnitude)
+/define/custom-field-functions/define "k_resolved" (rmse_x_velocity^2 + rmse_y_velocity^2 +rmse_z_velocity^2)*0.5
+/define/custom-field-functions/define "k_sgs_wale" ((0.5*(cell_volume^(1/3))*strain_rate_mag)^2)/3
+/define/custom-field-functions/define "percent_k_resolved" k_resolved/(k_resolved+k_sgs_wale)*100
+
 /plot/histogram/ y-plus 0 50 25 no car_body ()
 ####################################
 

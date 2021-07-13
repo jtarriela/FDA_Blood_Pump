@@ -12,8 +12,8 @@
 
 /define/boundary-conditions/modify-zones/mrf-to-sliding-mesh rotor
 
-/define/custom-field-functions/define "k_resolved" (rmse_x_velocity^2 + rmse_y_velocity^2 +rmse_z_velocity^2)*0.5
-/define/custom-field-functions/define "k_sgs_wale" ((0.5*(cell_volume^(1/3))*strain_rate_mag)^2)/3
+/define/custom-field-functions/define "k_resolved" ((x_velocity - mean_x_velocity)^2 + (y_velocity - mean_y_velocity)^2 +(z_velocity - mean_z_velocity))^2*0.5
+/define/custom-field-functions/define "k_sgs_wale" (viscosity_turb/(density*0.325*cell_volume^(1/3)))^2
 /define/custom-field-functions/define "percent_k_resolved" k_resolved/(k_resolved+k_sgs_wale)*100
 
 
