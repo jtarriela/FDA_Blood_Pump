@@ -38,16 +38,50 @@ UDS Scalar Value at inlet = 0 <br>
 x0 = 0m <br>
 y0 = 0m <br>
 z0 = 0.006562m <br>
-x1 = 0.03m <br>
-y1 = -0.03m <br>
+x1 = sqrt(1/2)*0.03^2m <br>
+y1 = -sqrt(1/2)*0.03^2m <br>
 z1 = z0 = 0.006562m <br>
 #### Quadrant 2 Line:
 x0 = 0m <br>
 y0 = 0m <br>
 z0 = 0.006562m <br>
-x1 = -0.03m <br>
-y1 = -0.03m <br>
+x1 = -sqrt(1/2)*0.03^2m or 0.0214 or 0.021213203435596427<br>
+y1 = -sqrt(1/2)*0.03^2m <br>
 z1 = z0 = 0.006562m <br>
+
+#### Diffuser 1 Line:
+x0 = 0.020m <br>
+y0 = -0.02581m <br>
+z0 = 0.006562m <br>
+x1 = 0.020m
+y1 = -0.02986m
+z1 = z0 = 0.006562m <br>
+
+#### Diffuser 2 Line:
+x0 = 0.025m <br>
+y0 = -0.02476m <br>
+z0 = 0.006562m <br>
+x1 = 0.023m
+y1 = -0.03061m
+z1 = z0 = 0.006562m <br>
+
+#### Diffuser 3 Line:
+x0 = 0.03m <br>
+y0 = -0.02401m <br>
+z0 = 0.006562m <br>
+x1 = 0.03m
+y1 = -0.03151m
+z1 = z0 = 0.006562m <br>
+
+#### Diffuser 4 Line:
+x0 = 0.035m <br>
+y0 = -0.02296m <br>
+z0 = 0.006562m <br>
+x1 = 0.035m
+y1 = -0.03241m
+z1 = z0 = 0.006562m <br>
+
+
 #### Blade Passsage Plane:
 z = 0.006562m
 #### ZX Outlet Plane:
