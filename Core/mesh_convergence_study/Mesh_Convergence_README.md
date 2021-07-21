@@ -76,3 +76,11 @@ Timestep: 0.00012 sec <br>
 
 Set 10 revolutions for numerical transience (10 rev * 200 step/rev)= 2000
 set 10 revolutions for data sampling
+
+#### TKE Tecplot Visualization:
+Computed resolved tke for all timesteps avail<br>
+for averaged tke:
+* averaged rms velocity 
+* averaged turbulent viscosity
+* averaged cell length **should be the same length
+
