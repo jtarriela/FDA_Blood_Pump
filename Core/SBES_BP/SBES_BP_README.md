@@ -11,6 +11,9 @@ Note in residual notebook datasets:: Last 200 datapoints to be truncated
 Density: 1056 kg/m3<br>
 Viscosity: 0.0034 Pa*s<br>
 Surface Roughness: 0.6um
+
+hemolysis experiments conducted at density 1035 kgm3 <br>
+PIV experiments conducted at density 1600-1750kg/m3 - newtownian blood analouge
 ***
 ### Initialization 
 Newtownian Fluid<br>
@@ -126,4 +129,7 @@ Initial URANS simulation 48M mesh:
 sample for 5 rev every blade pass
 
 ***
-
+#### SBES Results 5 Rev
+Avg static P at inlet (MFWA/MWA): -2.703585e+04 Pa <br>
+Avg Damage index outlet MWA GW: 2.723866e-07 <br>
+Avg DI outlet MWA EDS: 1.432285e-08
