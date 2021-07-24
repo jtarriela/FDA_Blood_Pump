@@ -1,0 +1,63 @@
+/file/read-case artery_base_case_file.cas.h5
+
+;##########   MODEL & SOLVER SETTINGS   ##########;
+;/define/models/viscous/kw-sst
+
+;##########   SET TRANSIENT FORM  ##########;
+/define/models/u2ob yes ;UNSTEADY 2ND ORDER BOUNDED TRANSIENT FORMULATION
+
+/define/models/viscous/laminar yes
+/define/models/solver/pressure-based yes
+/define/models/ steady yes ;STEADY STATE
+
+;##########   CELL ZONE 78 MATERIALS   ##########;
+; Options: blood-newtownian blood-cy blood-casson blood-cross blood-power
+/define/boundary-conditions/fluid/ 78 yes blood-newtownian no no no no 0 no 0 no 0 no 0 no 0 no 1 no no no no no
+
+;##########   PRESSURE OUTLET SETTINGS  ##########;
+/define/boundary-conditions/pressure-outlet 16 yes no 13332 no yes no no yes 5 10 yes no no no
+/define/boundary-conditions/pressure-outlet 17 yes no 13332 no yes no no yes 5 10 yes no no no
+
+;##########   TRANSIENT VELOCITY INLET SETTINGS  ##########;
+/define/boundary-conditions/velocity-inlet 15 no no yes yes yes yes yes no 0 no yes 3 0.012
+
+;### SET SOLVER ###; -- current run: COUPLED
+;/solve/set/p-v-coupling 20 ;SIMPLE
+;/solve/set/p-v-coupling 21 ;SIMPLEC
+;/solve/set/p-v-coupling 22 ;PISO
+/solve/set/p-v-coupling 24 ;Coupled
+
+;##########   FOR SIMPLE & COUPLED SOLVER   ##########;
+/solve/set/discretization-scheme/pressure 12 ;SECOND ORDER PRESSURE 
+/solve/set/discretization-scheme/mom 1 ;SECOND ORDER MOMENTUM
+/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
+/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
+
+;##########   INITIALIZE CASE   ##########;
+/solve/initialize/hyb-initialization
+
+;##########   TRANSIENT SOLUTION NORMALIZATION MATH ##########;
+;period 0.5s
+;time step = 0.01 sec/step
+;300 steps
+;real time = 3 seconds
+;period length = 0.5s
+;number of periods = 6
+
+;##########   TRANSIENT SOLUTION NORMALIZATION SETTINGS ##########;
+/solve/set/time-step 0.01 ;time step size (seconds/step)
+/solve/set/max-iterations-per-time-step 200
+/solve/set/reporting-interval 1
+/solve/dual-time-iterate 300 200 ;[max timesteps, iterations per step]
+
+
+/file/write-case-data "Newtownian_Transient_Norm.cas.h5"
+
+file/transient-export/cdat-for-cfd-post-&-ensight 'export_newt_hi' inlet outlet1 outlet2 walls () art1right () pressure pressure-coefficient dynamic-pressure absolute-pressure total-pressure velocity-magnitude x-velocity y-velocity z-velocity axial-velocity radial-velocity tangential-velocity strain-rate wall () yes no "export-1" "time-step" 1 time-step
+
+/solve/set/time-step 0.01 ;time step size (seconds/step)
+/solve/set/max-iterations-per-time-step 200
+/solve/set/reporting-interval 1
+/solve/dual-time-iterate 50 200 ;[max timesteps, iterations per step]
+
+exit

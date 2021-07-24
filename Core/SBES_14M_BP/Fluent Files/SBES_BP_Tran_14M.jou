@@ -1,0 +1,73 @@
+;##########   Mesh Convergence Study   ##########;
+/file/set-tuiversion "20.1"
+
+/file/read-case SBES_BP_24M_SS.dat.h5
+
+/define/models/u2ob yes
+/define/models/viscous kw-sst yes
+
+/define/models/viscous/turbulence-expert/turb-add-sbes-sdes yes
+/define/models/viscous/turbulence-expert/sbes-sdes-hybrid-model 2
+/define/models/viscous/turbulence-expert/sbes-sgs-option 3
+
+/define/boundary-conditions/modify-zones/mrf-to-sliding-mesh rotor
+
+/define/custom-field-functions/define "k_resolved" (rmse-x-velocity^2 + rmse-y-velocity^2 +rmse-z-velocity^2)*0.5
+/define/custom-field-functions/define "k_sgs_wale" ((0.5*(cell-volume^(1/3))*strain-rate-mag)^2)/3
+/define/custom-field-functions/define "percent_k_resolved" k-resolved/(k_resolved+k_sgs_wale)*100
+
+/define/custom-field-functions/define "percent_k_resolved" k-resolved/(k_resolved+k_sgs_wale)*100
+
+
+;SIMPLEC
+/solve/set/p-v-coupling 21
+
+;CHANGE UNDER RELAXATION TO NEAR 1
+/solve/set/under-relaxation/pressure 0.8
+/solve/set/under-relaxation/mom 0.8
+/solve/set/discretization-scheme/pressure 12 ;SECOND ORDER PRESSURE
+/solve/set/discretization-scheme/mom 7 ;BOUNDED CENTRAL DIFFERENCING
+/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
+/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
+
+;##########   Enable UDS Equations   ##########;
+/solve/set/equations uds-0 yes
+/solve/set/equations uds-1 yes
+
+/solve/report-definitions/add gw-hemolysis surface-massavg surface-names outlet () uds-0-scalar ()
+/solve/report-definitions/add eds-hemolysis surface-massavg surface-names outlet () uds-1-scalar ()
+/solve/report-files/add/gw-hemolysis active yes frequency 1 print yes report-defs gw-hemolysis () file-name gw-hemolysis ()
+/solve/report-files/add/gw-eds-hemolysis active yes frequency 1 print yes report-defs eds-hemolysis () file-name eds-hemolysis ()
+
+
+
+;##########   Convergence Criteria   ##########;
+/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.000000001 0.000000001
+
+/solve/report-files/edit max-vel-rotor frequency-of timestep
+/solve/report-files/edit p-in frequency-of timestep
+/solve/report-files/edit p-out frequency-of timestep
+/solve/report-files/edit mass-flux frequency-of timestep
+
+/solve/report-files/edit point-pressure frequency-of timestep
+/solve/report-files/edit point-shear frequency-of timestep
+/solve/report-files/edit point-GW frequency-of timestep
+/solve/report-files/edit point-velocity frequency-of timestep
+
+
+/solve/set/time-step 0.00001
+/solve/set/reporting-interval 1
+/file/auto-save/data-frequency 200
+/file/auto-save/retain-most-recent-files yes
+/solve/dual-time-iterate 19200 200;[max timesteps, iterations per step]
+/file/write-case-data "SBES_BP_48M_SBES_init.dat.h5"
+
+
+
+/parallel/timer/usage
+
+/report/summary "XXXXXX.txt"
+
+/file/write-case-data "XXXXX.cas.h5"
+
+quit

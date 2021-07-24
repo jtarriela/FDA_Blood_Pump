@@ -60,7 +60,7 @@ DEFINE_ADJUST(BloodDamage,d)
 			tau32 = tau23; 
 			tau33 = 2*C_DWDZ(c,c_t)*mu; 
 			second_invariant = fabs((tau11+tau22+tau33)*(tau11+tau22+tau33) -(tau11*tau11 + tau22*tau22 + tau33*tau33 + 2*tau12*tau21 + 2*tau23*tau32 + 2*tau13*tau31))/2;
-			tau_vm = sqrt(3*second_invariant); 
+			tau_vm = sqrt(3*second_invariant) /* fabs creates abs val of second invariant. */;
 			tau_p = sqrt(second_invariant); 
 			tau_b = sqrt(fabs((tau11-tau22)*(tau11-tau22) + (tau11-tau33)*(tau11-tau33) + (tau22-tau33)*(tau22-tau33) + tau12*tau12 + tau13*tau13 + tau21*tau21 + tau23*tau23 + tau31*tau31 + tau32*tau32));
 			
