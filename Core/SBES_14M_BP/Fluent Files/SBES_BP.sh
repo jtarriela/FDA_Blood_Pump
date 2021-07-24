@@ -8,7 +8,7 @@
 #SBATCH --sockets-per-node=2
 #SBATCH --ntasks-per-node=24
 #SBATCH --mem-per-cpu=7000
-#SBATCH --job-name=SBES_BP
+#SBATCH --job-name=SBES_24M_BP
 #SBATCH --output=CY_artery
 #SBATCH --time=1000:00:00
 
