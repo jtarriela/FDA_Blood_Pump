@@ -1,7 +1,7 @@
 ;##########   Mesh Convergence Study   ##########;
 /file/set-tuiversion "20.1"
 
-/file/read-case SBES_BP_24M_SS.dat.h5
+/file/read-case-data "SBES_15M_SS.cas.h5"
 
 /define/models/u2ob yes
 /define/models/viscous kw-sst yes
@@ -44,22 +44,42 @@
 ;##########   Convergence Criteria   ##########;
 /solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.000000001 0.000000001
 
-/solve/report-files/edit max-vel-rotor frequency-of timestep
-/solve/report-files/edit p-in frequency-of timestep
-/solve/report-files/edit p-out frequency-of timestep
-/solve/report-files/edit mass-flux frequency-of timestep
+/solve/report-files/edit max-vel-rotor frequency-of time-step frequency 10 ()
+/solve/report-files/edit p-in frequency-of time-step frequency 10 ()
+/solve/report-files/edit p-out frequency-of time-step frequency 10 ()
+/solve/report-files/edit mass-flux frequency-of time-step frequency 10 ()
 
-/solve/report-files/edit point-pressure frequency-of timestep
-/solve/report-files/edit point-shear frequency-of timestep
-/solve/report-files/edit point-GW frequency-of timestep
-/solve/report-files/edit point-velocity frequency-of timestep
+/solve/report-files/edit point-pressure-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-b frequency-of ttime-step frequency 10 ()
+/solve/report-files/edit point-pressure-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-shear-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-GW-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-vel-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-e frequency-of time-step frequency 10 ()
 
 
+/solve set warped-face-gradient-correction enable? yes yes
 /solve/set/time-step 0.00001
 /solve/set/reporting-interval 1
 /file/auto-save/data-frequency 200
 /file/auto-save/retain-most-recent-files yes
-/solve/dual-time-iterate 19200 200;[max timesteps, iterations per step]
+/solve/dual-time-iterate 12000 200;[max timesteps, iterations per step]
 /file/write-case-data "SBES_BP_48M_SBES_init.dat.h5"
 
 
