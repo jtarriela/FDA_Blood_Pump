@@ -74,15 +74,96 @@
 /solve/report-files/edit point-vel-e frequency-of time-step frequency 10 ()
 
 
+
+/solve/execute-commands/add-edit proc-stats 20 "time-step" "/report/system/proc-stats"
+/solve/execute-commands/add-edit partition-info 20 "time-step" "/parallel/partition/print-active-partitions"
+/solve/execute-commands/add-edit usage-stats 20 "time-step" "/parallel/timer/usage"
+/solve/execute-commands/add-edit usage-reset 20 "time-step" "/parallel/timer/reset"
+/solve/execute-commands/add-edit repartition 200 "time-step" "/parallel/partition/method metis 192"
+/solve/execute-commands/add-edit load-partition 200 "time-step" "/parallel/partition/use-stored-partition"
+/solve/execute-commands/add-edit partition-to-arch 200 "time-step" "/parallel/partition/reorder-partitions-to-architecture"
+
+
 /solve set warped-face-gradient-correction enable? yes yes
-/solve/set/time-step 0.00001
+;---------------------------------------------------------------- 0 rev complete
+;#### every 1600 time-step is 1 revolution, 400 per blade pass
+;#### reload case every 1/2 revolution
+;#### re-partition every 1/8 revolution
+
+
+/solve/set/time-step 0.000015
 /solve/set/reporting-interval 1
-/file/auto-save/data-frequency 200
-/file/auto-save/retain-most-recent-files yes
-/solve/dual-time-iterate 12000 200;[max timesteps, iterations per step]
-/file/write-case-data "SBES_BP_48M_SBES_init.dat.h5"
+/file/auto-save/data-frequency 240
+/file/auto-save/case-frequency each-time
+/solve/dual-time-iterate 800 200;[max timesteps, iterations per step]
 
 
+;---------------------------------------------------------------- .5 rev complete
+
+
+
+/file/read-case-data "SBES_15M_init-2-00800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 1.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-01600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 1.5 rev complete
+
+
+
+/file/read-case-data "SBES_15M_init-2-02400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 2.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-03200.cas.h5"
+/solve/dual-time-iterate 480 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 2.5 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-04000.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 3.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-04800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 3.5 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-05600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 4.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-06400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 4.5 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-07200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 5.0 rev complete
+
+
+/file/write-case-data "SBES_BP_15M_SBES_1.5e-5_complete.cas.h5"
 
 /parallel/timer/usage
 
