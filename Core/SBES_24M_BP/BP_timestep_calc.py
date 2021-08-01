@@ -4,7 +4,7 @@ Q_ = ureg.Quantity
 
 case={'rpm': Q_(2500,'rpm'),
       'blades': 4,
-      'timestep': Q_(1E-5,'sec')}
+      'timestep': Q_(5E-5,'sec')}
 
 rps = case['rpm'].to('rps') #revolutions per second
 sec_per_rev = 1/rps * Q_(1,'revolutions')
