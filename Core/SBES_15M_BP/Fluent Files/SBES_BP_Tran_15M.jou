@@ -37,20 +37,23 @@
 /solve/report-definitions/add gw-hemolysis surface-massavg surface-names outlet () uds-0-scalar ()
 /solve/report-definitions/add eds-hemolysis surface-massavg surface-names outlet () uds-1-scalar ()
 /solve/report-files/add/gw-hemolysis active yes frequency 1 print yes report-defs gw-hemolysis () file-name gw-hemolysis ()
-/solve/report-files/add/gw-eds-hemolysis active yes frequency 1 print yes report-defs eds-hemolysis () file-name eds-hemolysis ()
+/solve/report-files/add/eds-hemolysis active yes frequency 1 print yes report-defs eds-hemolysis () file-name eds-hemolysis ()
 
 
 
 ;##########   Convergence Criteria   ##########;
-/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.000000001 0.000000001
+/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.00001 0.00001
 
 /solve/report-files/edit max-vel-rotor frequency-of time-step frequency 10 ()
 /solve/report-files/edit p-in frequency-of time-step frequency 10 ()
 /solve/report-files/edit p-out frequency-of time-step frequency 10 ()
 /solve/report-files/edit mass-flux frequency-of time-step frequency 10 ()
+/solve/report-files/edit gw-hemolysis frequency-of time-step frequency 10 ()
+/solve/report-files/edit eds-hemolysis frequency-of time-step frequency 10 ()
+
 
 /solve/report-files/edit point-pressure-a frequency-of time-step frequency 10 ()
-/solve/report-files/edit point-pressure-b frequency-of ttime-step frequency 10 ()
+/solve/report-files/edit point-pressure-b frequency-of time-step frequency 10 ()
 /solve/report-files/edit point-pressure-c frequency-of time-step frequency 10 ()
 /solve/report-files/edit point-pressure-d frequency-of time-step frequency 10 ()
 /solve/report-files/edit point-pressure-e frequency-of time-step frequency 10 ()
@@ -72,6 +75,18 @@
 /solve/report-files/edit point-vel-c frequency-of time-step frequency 10 ()
 /solve/report-files/edit point-vel-d frequency-of time-step frequency 10 ()
 /solve/report-files/edit point-vel-e frequency-of time-step frequency 10 ()
+
+
+
+/solve/execute-commands/add-edit proc-stats 20 "" "/report/system/proc-stats"
+/solve/execute-commands/add-edit partition-info 20 "time-step" "/parallel/partition/print-active-partitions"
+/solve/execute-commands/add-edit usage-stats 20 "time-step" "/parallel/timer/usage"
+/solve/execute-commands/add-edit usage-stats 20 "time-step" "/parallel/timer/reset"
+/solve/execute-commands/add-edit bandwidth 20 "time-step" "/parallel/bandwidth"
+/solve/execute-commands/add-edit bandwidth 20 "time-step" "/parallel/latency"
+/solve/execute-commands/add-edit repartition 120 "time-step" "/parallel/partition/method metis"
+/solve/execute-commands/add-edit load-partition 120 "time-step" "/parallel/partition/use-stored-partition"
+/solve/execute-commands/add-edit partition-to-arch 120 "time-step" "/parallel/partition/reorder-partitions-to-architecture"
 
 
 /solve set warped-face-gradient-correction enable? yes yes
