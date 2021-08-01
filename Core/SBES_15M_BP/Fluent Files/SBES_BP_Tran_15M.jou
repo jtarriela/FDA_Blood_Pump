@@ -89,6 +89,14 @@
 /solve/execute-commands/add-edit partition-to-arch 120 "time-step" "/parallel/partition/reorder-partitions-to-architecture"
 
 
+/file/transient-export/ascii q1 quadrant-1 () velocity-magnitude () yes no q1 time-step 240 time-step
+/file/transient-export/ascii q2 quadrant-2 () velocity-magnitude () yes no q2 time-step 240 time-step
+/file/transient-export/ascii diff-1 diff-1 () velocity-magnitude () yes no diff-1 time-step 240 time-step
+/file/transient-export/ascii diff-2 diff-2 () velocity-magnitude () yes no diff-2 time-step 240 time-step
+/file/transient-export/ascii diff-3 diff-3 () velocity-magnitude () yes no diff-3 time-step 240 time-step
+/file/transient-export/ascii diff-4 diff-4 () velocity-magnitude () yes no diff-4 time-step 240 time-step
+
+
 /solve set warped-face-gradient-correction enable? yes yes
 /solve/set/time-step 0.00001
 /solve/set/reporting-interval 1

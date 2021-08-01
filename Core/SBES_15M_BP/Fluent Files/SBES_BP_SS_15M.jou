@@ -68,9 +68,14 @@
 /solve/set/discretization-scheme/uds-1 1 ;SECOND ORDER DISCRETIZATION
 
 ;##########   LINE SURFACES   ##########;
-/surface/line-surface quadrant-1 0 0 0.006562 0.03 -0.03 0.006562
-/surface/line-surface quadrant-2 0 0 0.006562 -0.03 -0.03 0.006562
-/surface/plane-surface blade-passage xy-plane 0.006562
+/surface/line-surface quadrant-1 0 0 0.006562 0.0214  -0.0214  0.006562
+/surface/line-surface quadrant-2 0 0 0.006562 -0.0214  -0.0214  0.006562
+
+/surface/line-surface diff-1 0.020 -0.02581 0.006562 0.020 -0.02986 0.006562
+/surface/line-surface diff-2 0.025 -0.02476 0.006562 0.025 -0.03061 0.006562
+/surface/line-surface diff-3 0.030 -0.02401 0.006562 0.030 -0.03151 0.006562
+/surface/line-surface diff-4 0.035 -0.02296 0.006562 0.035 -0.03241 0.006562
+
 
 ;##########   PLANE SURFACES   ##########;
 /surface/plane/zx--0.03 zx-plane -0.03
