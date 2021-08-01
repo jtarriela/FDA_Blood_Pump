@@ -1,6 +1,6 @@
 "max-vel-rotor"
-"Time Step" "max-vel-rotor"
-("Time Step" "max-vel-rotor")
+"Time_Step" "max-vel-rotor"
+("Time_Step" "max-vel-rotor")
 0 8.090072299293318
 10 8.15040385006626
 20 8.404255278624291

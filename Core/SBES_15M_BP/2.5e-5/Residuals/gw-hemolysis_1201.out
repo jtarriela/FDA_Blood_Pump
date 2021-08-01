@@ -1,6 +1,6 @@
 "gw-hemolysis"
-"Time Step" "gw-hemolysis"
-("Time Step" "gw-hemolysis")
+"Time_Step" "gw-hemolysis"
+("Time_Step" "gw-hemolysis")
 0 0
 10 5.945102113938673e-10
 20 1.221559019581121e-09
