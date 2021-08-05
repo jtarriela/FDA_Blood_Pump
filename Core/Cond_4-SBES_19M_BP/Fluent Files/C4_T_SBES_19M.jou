@@ -1,7 +1,7 @@
 ;##########   Mesh Convergence Study   ##########;
 /file/set-tuiversion "20.1"
 
-/file/read-case-data "SBES_19M_SS.cas.h5"
+/file/read-case-data "SBES_19M_T.cas.h5"
 
 /define/models/u2ob yes
 /define/models/viscous kw-sst yes
@@ -101,10 +101,6 @@
 /file/transient-export/ascii diff-2 diff-2 () velocity-magnitude () yes no diff-2 time-step 240 time-step
 /file/transient-export/ascii diff-3 diff-3 () velocity-magnitude () yes no diff-3 time-step 240 time-step
 /file/transient-export/ascii diff-4 diff-4 () velocity-magnitude () yes no diff-4 time-step 240 time-step
-
-
-
-
 
 ;---------------------------------------------------------------- 0 rev complete
 ;#### every 1600 time-step is 1 revolution, 400 per blade pass

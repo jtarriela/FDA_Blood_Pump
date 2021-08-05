@@ -385,7 +385,7 @@
 /solve/set/equations flow no
 /solve/iterate/250
 
-
-/file/write-case-data "SBES_19M_SS.cas.h5"
+/solve/set/equations flow yes
+/file/write-case-data "SBES_19M_T.cas.h5"
 
 quit
