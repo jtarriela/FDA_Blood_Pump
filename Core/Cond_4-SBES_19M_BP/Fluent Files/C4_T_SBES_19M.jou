@@ -120,14 +120,14 @@
 
 
 
-/file/read-case-data "SBES_15M_init-2-00800.cas.h5"
+/file/read-case-data "SBES_19M_T-00800.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
 ;---------------------------------------------------------------- 1.0 rev complete
 
 
-/file/read-case-data "SBES_15M_init-2-01600.cas.h5"
+/file/read-case-data "SBES_19M_T-01600.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
@@ -135,53 +135,53 @@
 
 
 
-/file/read-case-data "SBES_15M_init-2-02400.cas.h5"
+/file/read-case-data "SBES_19M_T-02400.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
 ;---------------------------------------------------------------- 2.0 rev complete
 
 
-/file/read-case-data "SBES_15M_init-2-03200.cas.h5"
+/file/read-case-data "SBES_19M_T-03200.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 ;---------------------------------------------------------------- 2.5 rev complete
 
 
-/file/read-case-data "SBES_15M_init-2-04000.cas.h5"
+/file/read-case-data "SBES_19M_T-04000.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
 ;---------------------------------------------------------------- 3.0 rev complete
 
 
-/file/read-case-data "SBES_15M_init-2-04800.cas.h5"
+/file/read-case-data "SBES_19M_T-04800.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 ;---------------------------------------------------------------- 3.5 rev complete
 
 
-/file/read-case-data "SBES_15M_init-2-05600.cas.h5"
+/file/read-case-data "SBES_19M_T0-05600.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 ;---------------------------------------------------------------- 4.0 rev complete
 
 
-/file/read-case-data "SBES_15M_init-2-06400.cas.h5"
+/file/read-case-data "SBES_19M_T-06400.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
 ;---------------------------------------------------------------- 4.5 rev complete
 
 
-/file/read-case-data "SBES_15M_init-2-07200.cas.h5"
+/file/read-case-data "SBES_19M_T-07200.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
 ;---------------------------------------------------------------- 5.0 rev complete
 
 
-/file/write-case-data "SBES_BP_19M_SBES_1.5e-5_complete.cas.h5"
+/file/write-case-data "SBES_1.5e-5_complete.cas.h5"
 
 /parallel/timer/usage
 

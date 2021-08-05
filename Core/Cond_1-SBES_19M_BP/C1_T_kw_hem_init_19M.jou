@@ -1,0 +1,108 @@
+;##########   Mesh Convergence Study   ##########;
+/file/set-tuiversion "20.1"
+
+/file/read-case-data "SBES_19M_T.cas.h5"
+
+/define/models/u2ob yes
+/define/models/viscous kw-sst yes
+
+;SIMPLEC
+/solve/set/p-v-coupling 21
+
+;CHANGE UNDER RELAXATION TO NEAR 1
+/solve/set/under-relaxation/pressure 0.8
+/solve/set/under-relaxation/mom 0.8
+/solve/set/discretization-scheme/pressure 12 ;SECOND ORDER PRESSURE
+/solve/set/discretization-scheme/mom 7 ;BOUNDED CENTRAL DIFFERENCING
+/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
+/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
+
+;##########   Convergence Criteria   ##########;
+/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.000001 0.000001
+
+/solve/report-files/edit gw-hemolysis frequency-of time-step frequency 10 ()
+/solve/report-files/edit ho-hemolysis frequency-of time-step frequency 10 ()
+
+;---------------------------------------------------------------- 0 rev complete
+;#### every 1600 time-step is 1 revolution, 400 per blade pass
+;#### reload case every 1/2 revolution
+;#### re-partition every 1/8 revolution
+
+
+/solve/set/time-step 0.000015
+/solve/set/reporting-interval 1
+/file/auto-save/data-frequency 200
+/file/auto-save/case-frequency each-time
+/solve/dual-time-iterate 800 200;[max timesteps, iterations per step]
+
+
+
+;---------------------------------------------------------------- .5 rev complete
+
+
+
+/file/read-case-data "SBES_15M_init-2-00800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 1.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-01600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 1.5 rev complete
+
+
+
+/file/read-case-data "SBES_15M_init-2-02400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 2.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-03200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 2.5 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-04000.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 3.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-04800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 3.5 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-05600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 4.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-06400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 4.5 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-07200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 5.0 rev complete
+
+
+/file/write-case-data "SBES_BP_19M_SBES_1.5e-5_complete.cas.h5"
+
+
+quit
