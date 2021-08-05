@@ -2,9 +2,9 @@ import os, glob, sys
 import pandas as pd
 import numpy as np
 # Changing the current working directory
-dir_path = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/q2'
-out_file = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/q2/AvgQ2.csv'
-raw_out_file = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/q2/AvgQ2-raw.csv'
+dir_path = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/q1'
+out_file = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/q1/AvgQ1.csv'
+raw_out_file = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/q1/AvgQ1-raw.csv'
 # dir_path_2 = '/Users/jdtarriela/Desktop/trans_log/1.5e-5/r2/'
 # out_file = '/Users/jdtarriela/Desktop/trans_log/1.5e-5/resid_all.csv'
 os.chdir(dir_path)
@@ -20,6 +20,7 @@ df = [pd.read_fwf(file, header=0, sep=" ", doublequote=True)
 df_appended = pd.DataFrame()
 for i in enumerate(df):
     print(i[1])
+    print(filenames[1])
     df_appended = df_appended.append(i[1], ignore_index=True)
 
 raw_df_appended = df_appended.copy()
@@ -32,7 +33,7 @@ df_appended['radius'] = np.sqrt(df_appended['x-coordinate']**2 + df_appended['y-
 resid_col_list = df_appended.columns
 col_list = df_appended.columns[0:].copy()
 
-df_appended["Bins"] = pd.cut(df_appended[col_list[0]], bins=200)
+df_appended["Bins"] = pd.cut(df_appended[col_list[5]], bins=1000)
 df_appended["bin_centres"] = df_appended["Bins"].apply(lambda x: x.mid)
 df_appended['Counts'] = df_appended.groupby(['Bins'])[col_list[0]].transform('count')
 df_appended['Bin Variance'] = df_appended.groupby(['Bins'])[col_list[0]].transform('var')
@@ -54,7 +55,7 @@ df_appended = df_appended.drop_duplicates(subset="Bins")
 df_appended = df_appended.reset_index()
 df_appended = df_appended.drop(resid_col_list, axis=1)
 
-
+#
 # Averages Y position of cells in bins
 # Averages Velocity of cells in bins
 df_appended.to_csv(path_or_buf=out_file,

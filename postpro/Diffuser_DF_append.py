@@ -2,9 +2,9 @@ import os, glob, sys
 import pandas as pd
 import numpy as np
 # Changing the current working directory
-dir_path = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/d4'
-out_file = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/d4/AvgDiffuser_0.35.csv'
-raw_out_file = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/d4/AvgDiffuser_0.35-raw.csv'
+dir_path = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/d2'
+out_file = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/d2/AvgDiffuser_0.25.csv'
+raw_out_file = '/Users/jdtarriela/Desktop/trans_log/5e-5/raw_line_exports_rev_6-15/d2/AvgDiffuser_0.25-raw.csv'
 # dir_path_2 = '/Users/jdtarriela/Desktop/trans_log/1.5e-5/r2/'
 # out_file = '/Users/jdtarriela/Desktop/trans_log/1.5e-5/resid_all.csv'
 os.chdir(dir_path)
@@ -32,7 +32,7 @@ raw_df_appended = df_appended.copy()
 resid_col_list = df_appended.columns
 col_list = df_appended.columns[0:].copy()
 
-df_appended["Bins"] = pd.cut(df_appended[col_list[0]], bins=76)
+df_appended["Bins"] = pd.cut(df_appended[col_list[2]], bins=1000)
 df_appended["bin_centres"] = df_appended["Bins"].apply(lambda x: x.mid)
 df_appended['Counts'] = df_appended.groupby(['Bins'])[col_list[0]].transform('count')
 df_appended['Bin Variance'] = df_appended.groupby(['Bins'])[col_list[0]].transform('var')

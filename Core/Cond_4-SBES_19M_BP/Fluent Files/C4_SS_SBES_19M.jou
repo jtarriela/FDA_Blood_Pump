@@ -1,0 +1,391 @@
+;##########   Mesh Convergence Study   ##########;
+/file/set-tuiversion "20.1"
+
+/file/read-case "SBES_19M.cas.h5"
+
+;##########   MODEL & SOLVER SETTINGS   ##########;
+/define/models/viscous/kw-sst yes
+
+;##########   Set Steady State Form   ##########;
+/define/models/steady yes ;STEADY STATE
+
+;##########   SET TRANSIENT FORM  ##########;
+;/define/models/u2ob yes ;UNSTEADY 2ND ORDER BOUNDED TRANSIENT FORMULATION
+
+;##########   INCOMPRESSIBLE FLOW:: PRESSURE BASED SOLVER  ##########;
+/define/models/solver/pressure-based yes
+
+;##########   USER DEFINED MEMORY ##########;
+/define/user-defined/user-defined-memory 5
+
+;##########   UDF Compile ##########;
+/define/user-defined/compiled-functions compile libudf yes "CY_Hemolysis_UDF.c" "" "udf.h" ""
+/define/user-defined/compiled-functions load libudf
+
+;##########   Hook Function ##########;
+/define/user-defined/function-hooks/adjust "BloodDamage::libudf" ""
+
+;##########   User Defined Scalar ##########;
+/define/user-defined/user-defined-scalars 2 no no yes "mass flow rate" yes "mass flow rate"
+
+;##########   CHANGE AIR TO BLOOD & UDS Diffusivity  ##########;
+/define/materials/change-create air blood yes constant 1035 no no yes constant 0.0035 no no yes defined-per-uds 0 constant 0 1 constant 0 -1 no yes
+
+;##########   Velocity Inlet Named Expression  ##########;
+/define/named-expressions/add inlet_profile_6L definition "-1159899502600.00[m^-4 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**5+12409094137.00[m^-3 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**4-45583195.479[m^-2 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**3+57572.884298[m^-1 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**2-42.536895656[s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))+1.1589883728[m s^-1]" description "Velocity inlet profile 6L 2500RPM" ()
+
+;##########   Rotor Velocity Named Expression  ##########;
+/define/named-expressions/add rotor_speed definition "2500[revolution min^-1] * 0.104719755[rad min revolution^-1 sec^-1]" description "RPM to Rad/sec for rotor" ()
+
+;##########   Velocity Inlet Boundary Conditions  ##########;
+/define/boundary-conditions/velocity-inlet inlet no no yes yes no "inlet_profile_6L" no 0 no no no yes 7 0.012 no yes no yes no 0 no 0
+
+;##########   Pressure Outlet Boundary Conditions  ##########;
+/define/boundary-conditions/pressure-outlet outlet yes no 0 no yes no no yes 7 0.012 yes yes no 0 no 0 yes no no no
+
+;##########   Cell Zone Def Rotor Rotation & Source Terms ##########;
+/define/boundary-conditions/fluid inflow no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 1 no no no no no
+/define/boundary-conditions/fluid rotor no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no yes -1 no "rotor_speed" no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 1 "none" no no no no no
+/define/boundary-conditions/fluid volute no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 0 no no no no no
+
+
+;##########   Define Moving Walls, Wall Roughness, Wall Flux  ##########;
+/define/boundary-conditions/wall rotor_body yes motion-bc-moving no no no yes no no 0.0000006 no 0.5 yes yes no 0 no 0 no "rotor_speed" 0 0 0 0 0 1
+/define/boundary-conditions/wall inflow_wall no no no no 0.0000006 no 0.5 yes yes no 0 no 0
+/define/boundary-conditions/wall volute_wall no no no no 0.0000006 no 0.5 yes yes no 0 no 0
+/define/boundary-conditions/wall rotor_wall no no no no 0.0000006 no 0.5 yes yes no 0 no 0
+/define/boundary-conditions/wall fillet no no no no 0.0000006 no 0.5 yes yes no 0 no 0
+
+;### SET SOLVER ###; -- current run: COUPLED
+/solve/set/p-v-coupling 21 ;Coupled
+
+;##########   FOR SIMPLE & COUPLED SOLVER   ##########;
+/solve/set/discretization-scheme/pressure 12 ;SECOND ORDER PRESSURE
+/solve/set/discretization-scheme/mom 1 ;SECOND ORDER MOMENTUM
+/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
+/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
+/solve/set/discretization-scheme/uds-0 1 ;SECOND ORDER DISCRETIZATION
+/solve/set/discretization-scheme/uds-1 1 ;SECOND ORDER DISCRETIZATION
+
+;##########   LINE SURFACES   ##########;
+/surface/line-surface quadrant-1 0 0 0.006562 0.0214  -0.0214  0.006562
+/surface/line-surface quadrant-2 0 0 0.006562 -0.0214  -0.0214  0.006562
+
+/surface/line-surface diff-1 0.020 -0.02581 0.006562 0.020 -0.02986 0.006562
+/surface/line-surface diff-2 0.025 -0.02476 0.006562 0.025 -0.03061 0.006562
+/surface/line-surface diff-3 0.030 -0.02401 0.006562 0.030 -0.03151 0.006562
+/surface/line-surface diff-4 0.035 -0.02296 0.006562 0.035 -0.03241 0.006562
+
+
+;##########   PLANE SURFACES   ##########;
+/surface/plane/zx--0.03 zx-plane -0.03
+/surface/plane/zx--0.0275 zx-plane -0.0275
+/surface/plane/zx--0.025 zx-plane -0.025
+/surface/plane/zx--0.0225 zx-plane -0.0225
+/surface/plane/zx--0.02 zx-plane -0.02
+/surface/plane/zx--0.0175 zx-plane -0.0175
+/surface/plane/zx--0.015 zx-plane -0.015
+/surface/plane/zx--0.0125 zx-plane -0.0125
+/surface/plane/zx--0.01 zx-plane -0.01
+/surface/plane/zx--0.0075 zx-plane -0.0075
+/surface/plane/zx--0.005 zx-plane -0.005
+/surface/plane/zx--0.0025 zx-plane -0.0025
+/surface/plane/zx-0 zx-plane 0
+/surface/plane/zx-0.0025 zx-plane 0.0025
+/surface/plane/zx-0.005 zx-plane 0.005
+/surface/plane/zx-0.0075 zx-plane 0.0075
+/surface/plane/zx-0.01 zx-plane 0.01
+/surface/plane/zx-0.0125 zx-plane 0.0125
+/surface/plane/zx-0.015 zx-plane 0.015
+/surface/plane/zx-0.0175 zx-plane 0.0175
+/surface/plane/zx-0.02 zx-plane 0.02
+/surface/plane/zx-0.0225 zx-plane 0.0225
+/surface/plane/zx-0.025 zx-plane 0.025
+/surface/plane/zx-0.0275 zx-plane 0.0275
+/surface/plane/zx-0.03 zx-plane 0.03
+/surface/plane/zx-0.0325 zx-plane 0.0325
+/surface/plane/zx-0.035 zx-plane 0.035
+/surface/plane/zx-0.0375 zx-plane 0.0375
+/surface/plane/zx-0.04 zx-plane 0.04
+/surface/plane/zx-0.0425 zx-plane 0.0425
+/surface/plane/zx-0.045 zx-plane 0.045
+/surface/plane/zx-0.0475 zx-plane 0.0475
+/surface/plane/zx-0.05 zx-plane 0.05
+/surface/plane/zx-0.0525 zx-plane 0.0525
+/surface/plane/zx-0.055 zx-plane 0.055
+/surface/plane/zx-0.0575 zx-plane 0.0575
+/surface/plane/zx-0.06 zx-plane 0.06
+/surface/plane/xy-0 xy-plane 0
+/surface/plane/xy-0.00025 xy-plane 0.00025
+/surface/plane/xy-0.0005 xy-plane 0.0005
+/surface/plane/xy-0.00075 xy-plane 0.00075
+/surface/plane/xy-0.001 xy-plane 0.001
+/surface/plane/xy-0.00125 xy-plane 0.00125
+/surface/plane/xy-0.0015 xy-plane 0.0015
+/surface/plane/xy-0.00175 xy-plane 0.00175
+/surface/plane/xy-0.002 xy-plane 0.002
+/surface/plane/xy-0.00225 xy-plane 0.00225
+/surface/plane/xy-0.0025 xy-plane 0.0025
+/surface/plane/xy-0.00275 xy-plane 0.00275
+/surface/plane/xy-0.003 xy-plane 0.003
+/surface/plane/xy-0.00325 xy-plane 0.00325
+/surface/plane/xy-0.0035 xy-plane 0.0035
+/surface/plane/xy-0.00375 xy-plane 0.00375
+/surface/plane/xy-0.004 xy-plane 0.004
+/surface/plane/xy-0.00425 xy-plane 0.00425
+/surface/plane/xy-0.0045 xy-plane 0.0045
+/surface/plane/xy-0.00475 xy-plane 0.00475
+/surface/plane/xy-0.005 xy-plane 0.005
+/surface/plane/xy-0.00525 xy-plane 0.00525
+/surface/plane/xy-0.0055 xy-plane 0.0055
+/surface/plane/xy-0.00575 xy-plane 0.00575
+/surface/plane/xy-0.006 xy-plane 0.006
+/surface/plane/xy-0.00625 xy-plane 0.00625
+/surface/plane/xy-0.0065 xy-plane 0.0065
+/surface/plane/xy-0.00675 xy-plane 0.00675
+/surface/plane/xy-0.007 xy-plane 0.007
+/surface/plane/xy-0.00725 xy-plane 0.00725
+/surface/plane/xy-0.0075 xy-plane 0.0075
+/surface/plane/xy-0.00775 xy-plane 0.00775
+/surface/plane/xy-0.008 xy-plane 0.008
+/surface/plane/xy-0.00825 xy-plane 0.00825
+/surface/plane/xy-0.0085 xy-plane 0.0085
+/surface/plane/xy-0.00875 xy-plane 0.00875
+/surface/plane/xy-0.009 xy-plane 0.009
+/surface/plane/xy-0.00925 xy-plane 0.00925
+/surface/plane/xy-0.0095 xy-plane 0.0095
+/surface/plane/xy-0.00975 xy-plane 0.00975
+/surface/plane/xy-0.01 xy-plane 0.01
+/surface/plane/xy-0.01025 xy-plane 0.01025
+/surface/plane/xy-0.0105 xy-plane 0.0105
+/surface/plane/xy-0.01075 xy-plane 0.01075
+/surface/plane/xy-0.011 xy-plane 0.011
+/surface/plane/xy-0.01125 xy-plane 0.01125
+/surface/plane/xy-0.0115 xy-plane 0.0115
+/surface/plane/xy-0.01175 xy-plane 0.01175
+/surface/plane/xy-0.012 xy-plane 0.012
+/surface/plane/xy-0.01225 xy-plane 0.01225
+/surface/plane/xy-0.0125 xy-plane 0.0125
+/surface/plane/xy-0.01275 xy-plane 0.01275
+/surface/plane/xy-0.013 xy-plane 0.013
+/surface/plane/xy-0.01325 xy-plane 0.01325
+/surface/plane/xy-0.0135 xy-plane 0.0135
+/surface/plane/xy-0.01375 xy-plane 0.01375
+/surface/plane/xy-0.014 xy-plane 0.014
+/surface/plane/xy-0.01425 xy-plane 0.01425
+/surface/plane/xy-0.0145 xy-plane 0.0145
+/surface/plane/xy-0.01475 xy-plane 0.01475
+/surface/plane/xy-0.015 xy-plane 0.015
+/surface/plane/xy-0.01525 xy-plane 0.01525
+/surface/plane/xy-0.0155 xy-plane 0.0155
+/surface/plane/xy-0.01575 xy-plane 0.01575
+/surface/plane/xy-0.016 xy-plane 0.016
+/surface/plane/xy-0.01625 xy-plane 0.01625
+/surface/plane/xy-0.0165 xy-plane 0.0165
+/surface/plane/xy-0.01675 xy-plane 0.01675
+/surface/plane/xy-0.017 xy-plane 0.017
+/surface/plane/xy-0.01725 xy-plane 0.01725
+/surface/plane/xy-0.0175 xy-plane 0.0175
+/surface/plane/xy-0.01775 xy-plane 0.01775
+/surface/plane/xy-0.018 xy-plane 0.018
+/surface/plane/xy-0.01825 xy-plane 0.01825
+/surface/plane/xy-0.0185 xy-plane 0.0185
+/surface/plane/xy-0.01875 xy-plane 0.01875
+/surface/plane/xy-0.019 xy-plane 0.019
+/surface/plane/xy-0.01925 xy-plane 0.01925
+/surface/plane/xy-0.0195 xy-plane 0.0195
+/surface/plane/xy-0.01975 xy-plane 0.01975
+/surface/plane/xy-0.02 xy-plane 0.02
+/surface/plane/xy-0.02025 xy-plane 0.02025
+/surface/plane/xy-0.0205 xy-plane 0.0205
+/surface/plane/xy-0.02075 xy-plane 0.02075
+/surface/plane/xy-0.021 xy-plane 0.021
+/surface/plane/xy-0.02125 xy-plane 0.02125
+/surface/plane/xy-0.0215 xy-plane 0.0215
+/surface/plane/xy-0.02175 xy-plane 0.02175
+/surface/plane/xy-0.022 xy-plane 0.022
+/surface/plane/xy-0.02225 xy-plane 0.02225
+/surface/plane/xy-0.0225 xy-plane 0.0225
+/surface/plane/xy-0.02275 xy-plane 0.02275
+/surface/plane/xy-0.023 xy-plane 0.023
+/surface/plane/xy-0.02325 xy-plane 0.02325
+/surface/plane/xy-0.0235 xy-plane 0.0235
+/surface/plane/xy-0.02375 xy-plane 0.02375
+/surface/plane/xy-0.024 xy-plane 0.024
+/surface/plane/xy-0.02425 xy-plane 0.02425
+/surface/plane/xy-0.0245 xy-plane 0.0245
+/surface/plane/xy-0.02475 xy-plane 0.02475
+/surface/plane/xy-0.025 xy-plane 0.025
+/surface/plane/xy-0.02525 xy-plane 0.02525
+/surface/plane/xy-0.0255 xy-plane 0.0255
+/surface/plane/xy-0.02575 xy-plane 0.02575
+/surface/plane/xy-0.026 xy-plane 0.026
+/surface/plane/xy-0.02625 xy-plane 0.02625
+/surface/plane/xy-0.0265 xy-plane 0.0265
+/surface/plane/xy-0.02675 xy-plane 0.02675
+/surface/plane/xy-0.027 xy-plane 0.027
+/surface/plane/xy-0.02725 xy-plane 0.02725
+/surface/plane/xy-0.0275 xy-plane 0.0275
+/surface/plane/xy-0.02775 xy-plane 0.02775
+/surface/plane/xy-0.028 xy-plane 0.028
+/surface/plane/xy-0.02825 xy-plane 0.02825
+/surface/plane/xy-0.0285 xy-plane 0.0285
+/surface/plane/xy-0.02875 xy-plane 0.02875
+/surface/plane/xy-0.029 xy-plane 0.029
+/surface/plane/xy-0.02925 xy-plane 0.02925
+/surface/plane/xy-0.0295 xy-plane 0.0295
+/surface/plane/xy-0.02975 xy-plane 0.02975
+/surface/plane/xy-0.03 xy-plane 0.03
+
+;##########   Point SURFACES   ##########;
+/surface/point-surface point-a 0 0 0.0195
+/surface/point-surface point-b 0.027 0 0.006562
+/surface/point-surface point-c 0 -0.0275 0.006562
+/surface/point-surface point-d 0.0117 -0.027 0.006562
+/surface/point-surface point-e 0.025 -0.027 0.006562
+
+: ##### Point Monitors ######
+/solve/report-definitions/add point-tau_vm-a surface-vertexavg surface-names point-a () field udm-0 ()
+/solve/report-definitions/add point-tau_vm-b surface-vertexavg surface-names point-b () field udm-0 ()
+/solve/report-definitions/add point-tau_vm-c surface-vertexavg surface-names point-c () field udm-0 ()
+/solve/report-definitions/add point-tau_vm-d surface-vertexavg surface-names point-d () field udm-0 ()
+/solve/report-definitions/add point-tau_vm-d surface-vertexavg surface-names point-e () field udm-0 ()
+
+/solve/report-definitions/add point-pressure-a surface-vertexavg surface-names point-a () field pressure ()
+/solve/report-definitions/add point-pressure-b surface-vertexavg surface-names point-b () field pressure ()
+/solve/report-definitions/add point-pressure-c surface-vertexavg surface-names point-c () field pressure ()
+/solve/report-definitions/add point-pressure-d surface-vertexavg surface-names point-d () field pressure ()
+/solve/report-definitions/add point-pressure-e surface-vertexavg surface-names point-e () field pressure ()
+
+/solve/report-definitions/add point-shear-a surface-vertexavg surface-names point-a () field strain-rate-mag ()
+/solve/report-definitions/add point-shear-b surface-vertexavg surface-names point-b () field strain-rate-mag ()
+/solve/report-definitions/add point-shear-c surface-vertexavg surface-names point-c () field strain-rate-mag ()
+/solve/report-definitions/add point-shear-d surface-vertexavg surface-names point-d () field strain-rate-mag ()
+/solve/report-definitions/add point-shear-e surface-vertexavg surface-names point-d () field strain-rate-mag ()
+
+/solve/report-definitions/add point-GW-a surface-vertexavg surface-names point-a () field uds-0-scalar ()
+/solve/report-definitions/add point-GW-b surface-vertexavg surface-names point-b () field uds-0-scalar ()
+/solve/report-definitions/add point-GW-c surface-vertexavg surface-names point-c () field uds-0-scalar ()
+/solve/report-definitions/add point-GW-d surface-vertexavg surface-names point-d () field uds-0-scalar ()
+/solve/report-definitions/add point-GW-e surface-vertexavg surface-names point-d () field uds-0-scalar ()
+
+/solve/report-definitions/add point-HO-a surface-vertexavg surface-names point-a () field uds-1-scalar ()
+/solve/report-definitions/add point-HO-b surface-vertexavg surface-names point-b () field uds-1-scalar ()
+/solve/report-definitions/add point-HO-c surface-vertexavg surface-names point-c () field uds-1-scalar ()
+/solve/report-definitions/add point-HO-d surface-vertexavg surface-names point-d () field uds-1-scalar ()
+/solve/report-definitions/add point-HO-e surface-vertexavg surface-names point-d () field uds-1-scalar ()
+
+/solve/report-definitions/add point-vel-a surface-vertexavg surface-names point-a () field velocity-magnitude ()
+/solve/report-definitions/add point-vel-b surface-vertexavg surface-names point-b () field velocity-magnitude ()
+/solve/report-definitions/add point-vel-c surface-vertexavg surface-names point-c () field velocity-magnitude ()
+/solve/report-definitions/add point-vel-d surface-vertexavg surface-names point-d () field velocity-magnitude ()
+/solve/report-definitions/add point-vel-e surface-vertexavg surface-names point-d () field velocity-magnitude ()
+
+
+; ### Report point files
+/solve/report-files/add/point-tau_vm-a active yes frequency 1 print no report-defs point-tau_vm-a () file-name point-tau_vm-a ()
+/solve/report-files/add/point-tau_vm-b active yes frequency 1 print no report-defs point-tau_vm-b () file-name point-tau_vm-b ()
+/solve/report-files/add/point-tau_vm-c active yes frequency 1 print no report-defs point-tau_vm-c () file-name point-tau_vm-c ()
+/solve/report-files/add/point-tau_vm-d active yes frequency 1 print no report-defs point-tau_vm-d () file-name point-tau_vm-d ()
+/solve/report-files/add/point-tau_vm-e active yes frequency 1 print no report-defs point-tau_vm-e () file-name point-tau_vm-e ()
+
+/solve/report-files/add/point-pressure-a  active yes frequency 1 print no report-defs point-pressure-a () file-name point-pressure-a ()
+/solve/report-files/add/point-pressure-b  active yes frequency 1 print no report-defs point-pressure-b () file-name point-pressure-b ()
+/solve/report-files/add/point-pressure-c  active yes frequency 1 print no report-defs point-pressure-c () file-name point-pressure-c ()
+/solve/report-files/add/point-pressure-d  active yes frequency 1 print no report-defs point-pressure-d () file-name point-pressure-d ()
+/solve/report-files/add/point-pressure-e  active yes frequency 1 print no report-defs point-pressure-e () file-name point-pressure-e ()
+
+/solve/report-files/add/point-shear-a  active yes frequency 1 print no report-defs point-shear-a () file-name point-shear-a ()
+/solve/report-files/add/point-shear-b  active yes frequency 1 print no report-defs point-shear-b () file-name point-shear-b ()
+/solve/report-files/add/point-shear-c  active yes frequency 1 print no report-defs point-shear-c () file-name point-shear-c ()
+/solve/report-files/add/point-shear-d  active yes frequency 1 print no report-defs point-shear-d () file-name point-shear-d ()
+/solve/report-files/add/point-shear-e  active yes frequency 1 print no report-defs point-shear-e () file-name point-shear-e ()
+
+/solve/report-files/add/point-GW-a  active yes frequency 1 print no report-defs point-GW-a () file-name point-GW-a ()
+/solve/report-files/add/point-GW-b  active yes frequency 1 print no report-defs point-GW-b () file-name point-GW-b ()
+/solve/report-files/add/point-GW-c  active yes frequency 1 print no report-defs point-GW-c () file-name point-GW-c ()
+/solve/report-files/add/point-GW-d  active yes frequency 1 print no report-defs point-GW-d () file-name point-GW-d ()
+/solve/report-files/add/point-GW-e  active yes frequency 1 print no report-defs point-GW-e () file-name point-GW-e ()
+
+/solve/report-files/add/point-HO-a  active yes frequency 1 print no report-defs point-HO-a () file-name point-HO-a ()
+/solve/report-files/add/point-HO-b  active yes frequency 1 print no report-defs point-HO-b () file-name point-HO-b ()
+/solve/report-files/add/point-HO-c  active yes frequency 1 print no report-defs point-HO-c () file-name point-HO-c ()
+/solve/report-files/add/point-HO-d  active yes frequency 1 print no report-defs point-HO-d () file-name point-HO-d ()
+/solve/report-files/add/point-HO-e  active yes frequency 1 print no report-defs point-HO-e () file-name point-HO-e ()
+
+/solve/report-files/add/point-vel-a  active yes frequency 1 print no report-defs point-vel-a () file-name point-vel-a ()
+/solve/report-files/add/point-vel-b  active yes frequency 1 print no report-defs point-vel-b () file-name point-vel-b ()
+/solve/report-files/add/point-vel-c  active yes frequency 1 print no report-defs point-vel-c () file-name point-vel-c ()
+/solve/report-files/add/point-vel-d  active yes frequency 1 print no report-defs point-vel-d () file-name point-vel-d ()
+/solve/report-files/add/point-vel-e  active yes frequency 1 print no report-defs point-vel-e () file-name point-vel-e ()
+
+;##########
+/define/custom-field-functions/define "time_scale" cell_volume^(1/3)/(velocity_magnitude + 0.000000000000001)
+/define/custom-field-functions/define "integral_length_scale" turb_kinetic_energy * sqrt(turb_kinetic_energy)/(turb_diss_rate+0.000000000000001)
+/define/custom-field-functions/define "l0_to_delta_ratio" integral_length_scale / cell_volume^(1/3)
+
+;##########   Convergence Criteria   ##########;
+/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.0000001 0.0000001
+
+;##########   Report Definition Monitors   ##########;
+/solve/report-definitions/add p-in surface-areaavg surface-names inlet () field total-pressure ()
+/solve/report-definitions/add p-out surface-areaavg surface-names outlet () field total-pressure ()
+/solve/report-definitions/add mass-flux flux-massflow zone-names inlet outlet () ()
+/solve/report-definitions/add max-vel-rotor volume-max zone-names rotor () field velocity-magnitude ()
+/solve/report-definitions/add gw-hemolysis surface-massavg surface-names outlet () field uds-0-scalar ()
+/solve/report-definitions/add ho-hemolysis surface-massavg surface-names outlet () field uds-1-scalar ()
+
+
+;##########   Report Files   ##########;
+/solve/report-files/add/p-in active yes frequency 1 print yes report-defs p-in () file-name pressure-in ()
+/solve/report-files/add/mass-flux active yes frequency 1 print yes report-defs mass-flux () file-name mass-flux ()
+/solve/report-files/add/max-vel-rotor active yes frequency 1 print yes report-defs max-vel-rotor () file-name max-vel-rotor ()
+/solve/report-files/add/gw-hemolysis active yes frequency 1 print yes report-defs gw-hemolysis () file-name gw-hemolysis ()
+/solve/report-files/add/ho-hemolysis active yes frequency 1 print yes report-defs ho-hemolysis () file-name ho-hemolysis ()
+
+;##########   Disable UDS Equations   ##########;
+/solve/set/equations uds-0 no
+/solve/set/equations uds-1 no
+
+/solve set warped-face-gradient-correction enable? yes yes
+
+;##########   INITIALIZE CASE   ##########;
+/solve/initialize/hyb-initialization
+/file/write-case-data "SBES_19M_init.cas.h5"
+
+;##########   Solve Steady State   ##########;
+/file/auto-save/data-frequency 500
+/file/auto-save/case-frequency each-time
+
+
+/solve/iterate/500
+/parallel/timer/usage
+
+/file/read-case-data "SBES_19M_init-500.cas.h5"
+/solve/iterate/500
+
+/file/read-case-data "SBES_19M_init-1000.cas.h5"
+/solve/iterate/500
+
+/file/read-case-data "SBES_19M_init-1500.cas.h5"
+/solve/iterate/500
+
+/file/read-case-data "SBES_19M_init-2000.cas.h5"
+/solve/iterate/500
+
+/file/read-case-data "SBES_19M_init-2500.cas.h5"
+/solve/iterate/500
+
+/file/read-case-data "SBES_19M_init-3000.cas.h5"
+
+
+;##########   Solve Steady Hemolysis   ##########;
+/solve/set/equations uds-0 yes
+/solve/set/equations uds-1 yes
+/solve/set/equations flow no
+/solve/iterate/250
+
+
+/file/write-case-data "SBES_19M_SS.cas.h5"
+
+quit

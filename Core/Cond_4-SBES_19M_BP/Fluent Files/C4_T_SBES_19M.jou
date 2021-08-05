@@ -1,0 +1,195 @@
+;##########   Mesh Convergence Study   ##########;
+/file/set-tuiversion "20.1"
+
+/file/read-case-data "SBES_19M_SS.cas.h5"
+
+/define/models/u2ob yes
+/define/models/viscous kw-sst yes
+
+/define/models/viscous/turbulence-expert/turb-add-sbes-sdes yes
+/define/models/viscous/turbulence-expert/sbes-sdes-hybrid-model 2
+/define/models/viscous/turbulence-expert/sbes-sgs-option 3
+
+/define/boundary-conditions/modify-zones/mrf-to-sliding-mesh rotor
+
+/define/custom-field-functions/define "k_resolved" (rmse-x-velocity^2 + rmse-y-velocity^2 +rmse-z-velocity^2)*0.5
+/define/custom-field-functions/define "k_sgs_wale" ((0.5*(cell-volume^(1/3))*strain-rate-mag)^2)/3
+/define/custom-field-functions/define "percent_k_resolved" k-resolved/(k_resolved+k_sgs_wale)*100
+
+
+;SIMPLEC
+/solve/set/p-v-coupling 21
+
+;CHANGE UNDER RELAXATION TO NEAR 1
+/solve/set/under-relaxation/pressure 0.8
+/solve/set/under-relaxation/mom 0.8
+/solve/set/discretization-scheme/pressure 12 ;SECOND ORDER PRESSURE
+/solve/set/discretization-scheme/mom 7 ;BOUNDED CENTRAL DIFFERENCING
+/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
+/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
+
+/solve/report-definitions/add gw-hemolysis surface-massavg surface-names outlet () uds-0-scalar ()
+/solve/report-definitions/add eds-hemolysis surface-massavg surface-names outlet () uds-1-scalar ()
+/solve/report-files/add/gw-hemolysis active yes frequency 1 print yes report-defs gw-hemolysis () file-name gw-hemolysis ()
+/solve/report-files/add/eds-hemolysis active yes frequency 1 print yes report-defs eds-hemolysis () file-name eds-hemolysis ()
+
+
+
+;##########   Convergence Criteria   ##########;
+/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.00001 0.00001
+
+/solve/report-files/edit max-vel-rotor frequency-of time-step frequency 10 ()
+/solve/report-files/edit p-in frequency-of time-step frequency 10 ()
+/solve/report-files/edit p-out frequency-of time-step frequency 10 ()
+/solve/report-files/edit mass-flux frequency-of time-step frequency 10 ()
+/solve/report-files/edit gw-hemolysis frequency-of time-step frequency 10 ()
+/solve/report-files/edit ho-hemolysis frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-pressure-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-shear-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-GW-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-vel-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-tau_vm-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-HO-a  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-b  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-c  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-d  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-e  frequency-of time-step frequency 10 ()
+
+
+
+
+/solve/execute-commands/add-edit proc-stats 20 "" "/report/system/proc-stats"
+/solve/execute-commands/add-edit partition-info 20 "time-step" "/parallel/partition/print-active-partitions"
+/solve/execute-commands/add-edit usage-stats 20 "time-step" "/parallel/timer/usage"
+/solve/execute-commands/add-edit usage-stats 20 "time-step" "/parallel/timer/reset"
+/solve/execute-commands/add-edit bandwidth 20 "time-step" "/parallel/bandwidth"
+/solve/execute-commands/add-edit bandwidth 20 "time-step" "/parallel/latency"
+/solve/execute-commands/add-edit repartition 120 "time-step" "/parallel/partition/method metis"
+/solve/execute-commands/add-edit load-partition 120 "time-step" "/parallel/partition/use-stored-partition"
+/solve/execute-commands/add-edit partition-to-arch 120 "time-step" "/parallel/partition/reorder-partitions-to-architecture"
+
+
+/file/transient-export/ascii q1 quadrant-1 () velocity-magnitude () yes no q1 time-step 240 time-step
+/file/transient-export/ascii q2 quadrant-2 () velocity-magnitude () yes no q2 time-step 240 time-step
+/file/transient-export/ascii diff-1 diff-1 () velocity-magnitude () yes no diff-1 time-step 240 time-step
+/file/transient-export/ascii diff-2 diff-2 () velocity-magnitude () yes no diff-2 time-step 240 time-step
+/file/transient-export/ascii diff-3 diff-3 () velocity-magnitude () yes no diff-3 time-step 240 time-step
+/file/transient-export/ascii diff-4 diff-4 () velocity-magnitude () yes no diff-4 time-step 240 time-step
+
+
+
+
+
+;---------------------------------------------------------------- 0 rev complete
+;#### every 1600 time-step is 1 revolution, 400 per blade pass
+;#### reload case every 1/2 revolution
+;#### re-partition every 1/8 revolution
+
+
+/solve/set/time-step 0.000015
+/solve/set/reporting-interval 1
+/file/auto-save/data-frequency 200
+/file/auto-save/case-frequency each-time
+/solve/dual-time-iterate 800 200;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- .5 rev complete
+
+
+
+/file/read-case-data "SBES_15M_init-2-00800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 1.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-01600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 1.5 rev complete
+
+
+
+/file/read-case-data "SBES_15M_init-2-02400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 2.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-03200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 2.5 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-04000.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 3.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-04800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 3.5 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-05600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 4.0 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-06400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 4.5 rev complete
+
+
+/file/read-case-data "SBES_15M_init-2-07200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 5.0 rev complete
+
+
+/file/write-case-data "SBES_BP_15M_SBES_1.5e-5_complete.cas.h5"
+
+/parallel/timer/usage
+
+/report/summary "XXXXXX.txt"
+
+/file/write-case-data "XXXXX.cas.h5"
+
+quit
