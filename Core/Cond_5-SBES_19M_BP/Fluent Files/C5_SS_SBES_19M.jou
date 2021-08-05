@@ -35,7 +35,7 @@
 /define/named-expressions/add inlet_profile_6L definition "-1159899502600.00[m^-4 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**5+12409094137.00[m^-3 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**4-45583195.479[m^-2 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**3+57572.884298[m^-1 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**2-42.536895656[s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))+1.1589883728[m s^-1]" description "Velocity inlet profile 6L 2500RPM" ()
 
 ;##########   Rotor Velocity Named Expression  ##########;
-/define/named-expressions/add rotor_speed definition "2500[revolution min^-1] * 0.104719755[rad min revolution^-1 sec^-1]" description "RPM to Rad/sec for rotor" ()
+/define/named-expressions/add rotor_speed definition "3500[revolution min^-1] * 0.104719755[rad min revolution^-1 sec^-1]" description "RPM to Rad/sec for rotor" ()
 
 ;##########   Velocity Inlet Boundary Conditions  ##########;
 /define/boundary-conditions/velocity-inlet inlet no no yes yes no "inlet_profile_6L" no 0 no no no yes 7 0.012 no yes no yes no 0 no 0
@@ -249,7 +249,7 @@
 /solve/report-definitions/add point-tau_vm-b surface-vertexavg surface-names point-b () field udm-0 ()
 /solve/report-definitions/add point-tau_vm-c surface-vertexavg surface-names point-c () field udm-0 ()
 /solve/report-definitions/add point-tau_vm-d surface-vertexavg surface-names point-d () field udm-0 ()
-/solve/report-definitions/add point-tau_vm-d surface-vertexavg surface-names point-e () field udm-0 ()
+/solve/report-definitions/add point-tau_vm-e surface-vertexavg surface-names point-e () field udm-0 ()
 
 /solve/report-definitions/add point-pressure-a surface-vertexavg surface-names point-a () field pressure ()
 /solve/report-definitions/add point-pressure-b surface-vertexavg surface-names point-b () field pressure ()
@@ -338,6 +338,7 @@
 
 ;##########   Report Files   ##########;
 /solve/report-files/add/p-in active yes frequency 1 print yes report-defs p-in () file-name pressure-in ()
+/solve/report-files/add/p-out active yes frequency 1 print yes report-defs p-out () file-name pressure-out ()
 /solve/report-files/add/mass-flux active yes frequency 1 print yes report-defs mass-flux () file-name mass-flux ()
 /solve/report-files/add/max-vel-rotor active yes frequency 1 print yes report-defs max-vel-rotor () file-name max-vel-rotor ()
 /solve/report-files/add/gw-hemolysis active yes frequency 1 print yes report-defs gw-hemolysis () file-name gw-hemolysis ()
@@ -351,14 +352,41 @@
 
 ;##########   INITIALIZE CASE   ##########;
 /solve/initialize/hyb-initialization
-/file/write-case-data "SBES_19M_init.cas.h5"
+/file/write-case-data "C5_SBES_19M_init.cas.h5"
 
 ;##########   Solve Steady State   ##########;
-/file/auto-save/data-frequency 200
-/solve/iterate/3500
+/file/auto-save/data-frequency 500
+/file/auto-save/case-frequency each-time
 
+
+/solve/iterate/500
 /parallel/timer/usage
 
-/file/write-case-data "SBES_15M_SS.cas.h5"
+/file/read-case-data "C5_SBES_19M_init-500.cas.h5"
+/solve/iterate/500
+
+/file/read-case-data "C5_SBES_19M_init-1000.cas.h5"
+/solve/iterate/500
+
+/file/read-case-data "C5_SBES_19M_init-1500.cas.h5"
+/solve/iterate/500
+
+/file/read-case-data "C_SBES_19M_init-2000.cas.h5"
+/solve/iterate/500
+
+/file/read-case-data "C5_SBES_19M_init-2500.cas.h5"
+/solve/iterate/500
+
+/file/read-case-data "C5_SBES_19M_init-3000.cas.h5"
+
+
+;##########   Solve Steady Hemolysis   ##########;
+/solve/set/equations uds-0 yes
+/solve/set/equations uds-1 yes
+/solve/set/equations flow no
+/solve/iterate/300
+
+/solve/set/equations flow yes
+/file/write-case-data "C5_SBES_19M_T.cas.h5"
 
 quit
