@@ -24,6 +24,9 @@ Coupled scalar transient simulation <br>
 
 ***
 ### Timestep Calculations
+
+Timestep:: 1.5E-5s 
+
 | Timestep Size | Timesteps per Blade Pass | Timestep per Rotation |
 | --------------:|---------------:|---------------:|
 | 5E-5s | 120 | 480 |

@@ -44,9 +44,9 @@
 /define/boundary-conditions/pressure-outlet outlet yes no 0 no yes no no yes 7 0.012 yes yes no 0 no 0 yes no no no
 
 ;##########   Cell Zone Def Rotor Rotation & Source Terms ##########;
-/define/boundary-conditions/fluid inflow no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 1 no no no no no
-/define/boundary-conditions/fluid rotor no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no yes -1 no "rotor_speed" no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 1 "none" no no no no no
-/define/boundary-conditions/fluid volute no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 0 no no no no no
+/define/boundary-conditions/fluid inflow no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 1 no no no no no
+/define/boundary-conditions/fluid rotor no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" no yes -1 no "rotor_speed" no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 1 "none" no no no no no
+/define/boundary-conditions/fluid volute no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 0 no no no no no
 
 
 ;##########   Define Moving Walls, Wall Roughness, Wall Flux  ##########;

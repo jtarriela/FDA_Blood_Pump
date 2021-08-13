@@ -44,9 +44,9 @@
 /define/boundary-conditions/pressure-outlet outlet yes no 0 no yes no no yes 4 0.012 yes yes no 0 no 0 yes no no no
 
 ;##########   Cell Zone Def Rotor Rotation & Source Terms ##########;
-/define/boundary-conditions/fluid inflow no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 1 no no no no no
-/define/boundary-conditions/fluid rotor no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no yes -1 no "rotor_speed" no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 1 "none" no no no no no
-/define/boundary-conditions/fluid volute no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 0 no no no no no
+/define/boundary-conditions/fluid inflow no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 1 no no no no no
+/define/boundary-conditions/fluid rotor no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" no yes -1 no "rotor_speed" no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 1 "none" no no no no no
+/define/boundary-conditions/fluid volute no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 0 no no no no no
 
 
 ;##########   Define Moving Walls, Wall Roughness, Wall Flux  ##########;
@@ -244,6 +244,7 @@
 /surface/point-surface point-d 0.0117 -0.027 0.006562
 /surface/point-surface point-e 0.025 -0.027 0.006562
 
+
 : ##### Point Monitors ######
 /solve/report-definitions/add point-tau_vm-a surface-vertexavg surface-names point-a () field udm-0 ()
 /solve/report-definitions/add point-tau_vm-b surface-vertexavg surface-names point-b () field udm-0 ()
@@ -390,115 +391,6 @@
 
 
 
-;##########   Solve Transient Hemolysis   ##########;
-
-/file/read-case-data "C1_hemolysis_19M_init.cas.h5"
-
-/define/models/u2ob yes
-/define/models/viscous kw-sst yes
-
-;SIMPLEC
-/solve/set/p-v-coupling 21
-
-;CHANGE UNDER RELAXATION TO NEAR 1
-/solve/set/under-relaxation/pressure 0.8
-/solve/set/under-relaxation/mom 0.8
-/solve/set/discretization-scheme/pressure 12 ;SECOND ORDER PRESSURE
-/solve/set/discretization-scheme/mom 7 ;BOUNDED CENTRAL DIFFERENCING
-/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
-/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
-
-;##########   Convergence Criteria   ##########;
-/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.000001 0.000001
-
-/solve/report-files/edit gw-hemolysis frequency-of time-step frequency 10 ()
-/solve/report-files/edit ho-hemolysis frequency-of time-step frequency 10 ()
-
-/solve/report-files/edit point-GW-a frequency-of time-step frequency 10 ()
-/solve/report-files/edit point-GW-b frequency-of time-step frequency 10 ()
-/solve/report-files/edit point-GW-c frequency-of time-step frequency 10 ()
-/solve/report-files/edit point-GW-d frequency-of time-step frequency 10 ()
-/solve/report-files/edit point-GW-e frequency-of time-step frequency 10 ()
-/solve/report-files/edit point-HO-a  frequency-of time-step frequency 10 ()
-/solve/report-files/edit point-HO-b  frequency-of time-step frequency 10 ()
-/solve/report-files/edit point-HO-c  frequency-of time-step frequency 10 ()
-/solve/report-files/edit point-HO-d  frequency-of time-step frequency 10 ()
-/solve/report-files/edit point-HO-e  frequency-of time-step frequency 10 ()
-
----------------------------------------------------------------- 0 rev complete
-;#### every 240 time-step is 1 revolution, 240 per blade pass
-
-/solve/set/time-step 0.0001
-/solve/set/reporting-interval 1
-/file/auto-save/data-frequency 240
-/file/auto-save/case-frequency each-time
-/solve/dual-time-iterate 240 200;[max timesteps, iterations per step]
-
-
-
-;---------------------------------------------------------------- 1 rev complete
-
-
-
-/file/read-case-data "C1_hemolysis_19M_init-00240.cas.h5"
-/solve/dual-time-iterate 240 120;[max timesteps, iterations per step]
-
-
-;---------------------------------------------------------------- 2.0 rev complete
-
-
-/file/read-case-data "C1_hemolysis_19M_init-0480.cas.h5"
-/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
-
-
-;---------------------------------------------------------------- 3 rev complete
-
-
-
-/file/read-case-data "C1_hemolysis_19M_init-00720.cas.h5"
-/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
-
-
-;---------------------------------------------------------------- 4.0 rev complete
-
-
-/file/read-case-data "C1_hemolysis_19M_init-00960.cas.h5"
-/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
-
-;---------------------------------------------------------------- 5 rev complete
-
-
-/file/read-case-data "C1_hemolysis_19M_init-01200.cas.h5"
-/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
-
-
-;---------------------------------------------------------------- 6 rev complete
-
-
-/file/read-case-data "C1_hemolysis_19M_init-01440.cas.h5"
-/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
-
-;---------------------------------------------------------------- 7 rev complete
-
-
-/file/read-case-data "C1_hemolysis_19M_init-01680.cas.h5"
-/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
-
-;---------------------------------------------------------------- 8 rev complete
-
-
-/file/read-case-data "C1_hemolysis_19M_init-01920.cas.h5"
-/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
-
-
-;---------------------------------------------------------------- 9 rev complete
-
-
-/file/read-case-data "C1_hemolysis_19M_init-02160.cas.h5"
-/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
-
-
-;---------------------------------------------------------------- 10 rev complete
 
 /solve/set/equations flow
 /file/write-case-data "C1_hemolysis_complete.cas.h5"
