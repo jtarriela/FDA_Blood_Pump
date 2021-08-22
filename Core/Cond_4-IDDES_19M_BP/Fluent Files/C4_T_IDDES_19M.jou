@@ -1,14 +1,11 @@
 ;##########   Mesh Convergence Study   ##########;
 /file/set-tuiversion "20.1"
 
-/file/read-case-data "C4_SBES_19M_T.cas.h5"
+/file/read-case-data "C4_IDDES_19M_T.cas.h5"
 
 /define/models/u2ob yes
-/define/models/viscous kw-sst yes
-
-/define/models/viscous/turbulence-expert/turb-add-sbes-sdes yes
-/define/models/viscous/turbulence-expert/sbes-sdes-hybrid-model 2
-/define/models/viscous/turbulence-expert/sbes-sgs-option 3
+/define/models/viscous detached-eddy-simulation yes sst-k-omega
+/define/models/viscous des-limiter-option 5
 
 /define/boundary-conditions/modify-zones/mrf-to-sliding-mesh rotor
 
@@ -89,7 +86,7 @@
 /solve/execute-commands/add-edit proc-stats 20 "time-step" "/report/system/proc-stats"
 /solve/execute-commands/add-edit partition-info 20 "time-step" "/parallel/partition/print-active-partitions"
 /solve/execute-commands/add-edit usage-stats 20 "time-step" "/parallel/timer/usage"
-/solve/execute-commands/add-edit usage-reset 20 "time-step" "/parallel/timer/reset"
+/solve/execute-commands/add-edit usage-stats 20 "time-step" "/parallel/timer/reset"
 /solve/execute-commands/add-edit bandwidth 20 "time-step" "/parallel/bandwidth"
 /solve/execute-commands/add-edit bandwidth 20 "time-step" "/parallel/latency"
 /solve/execute-commands/add-edit repartition 200 "time-step" "/parallel/partition/method metis"
@@ -111,7 +108,7 @@
 /solve/set/reporting-interval 1
 /file/auto-save/data-frequency 200
 /file/auto-save/case-frequency each-time
-/file/auto-save/root-name "C4_SBES_19M_T"
+/file/auto-save/root-name "C4_IDDES_19M_T"
 /file/auto-save/retain-most-recent-files yes
 
 /solve/monitors/residual/reset yes
@@ -127,14 +124,14 @@
 
 
 
-/file/read-case-data "C4_SBES_19M_T-1-00800.cas.h5"
+/file/read-case-data "C4_IDDES_19M_T-1-00800.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
 ;---------------------------------------------------------------- 1.0 rev complete
 
 
-/file/read-case-data "C4_SBES_19M_T-1-01600.cas.h5"
+/file/read-case-data "C4_IDDES_19M_T-1-01600.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
@@ -142,46 +139,46 @@
 
 
 
-/file/read-case-data "C4_SBES_19M_T-1-02400.cas.h5"
+/file/read-case-data "C4_IDDES_19M_T-1-02400.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
 ;---------------------------------------------------------------- 2.0 rev complete
 
 
-/file/read-case-data "C4_SBES_19M_T-1-03200.cas.h5"
+/file/read-case-data "C4_IDDES_19M_T-1-03200.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 ;---------------------------------------------------------------- 2.5 rev complete
 
 
-/file/read-case-data "C4_SBES_19M_T-1-04000.cas.h5"
+/file/read-case-data "C4_IDDES_19M_T-1-04000.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
 ;---------------------------------------------------------------- 3.0 rev complete
 
 
-/file/read-case-data "C4_SBES_19M_T-1-04800.cas.h5"
+/file/read-case-data "C4_IDDES_19M_T-1-04800.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 ;---------------------------------------------------------------- 3.5 rev complete
 
 
-/file/read-case-data "C4_SBES_19M_T-1-05600.cas.h5"
+/file/read-case-data "C4_IDDES_19M_T-1-05600.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 ;---------------------------------------------------------------- 4.0 rev complete
 
 
-/file/read-case-data "C4_SBES_19M_T-1-06400.cas.h5"
+/file/read-case-data "C4_IDDES_19M_T-1-06400.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
 ;---------------------------------------------------------------- 4.5 rev complete
 
 
-/file/read-case-data "C4_SBES_19M_T-1-07200.cas.h5"
+/file/read-case-data "C4_IDDES_19M_T-1-07200.cas.h5"
 /solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
 
 
@@ -189,15 +186,16 @@
 
 
 
-/file/read-case-data "C4_SBES_19M_T-1-08000.cas.h5"
+/file/read-case-data "C4_IDDES_19M_T-1-08000.cas.h5"
 
-/file/transient-export/tecplot blade_passage blade-passage () velocity-magnitude () blade_pass_export time-step 400 time-step
+/file/transient-export/tecplot blade_passage blade-passage () velocity-magnitude z-coordinate x-coordinate y-coordinate () blade_pass_export time-step 400 time-step
 
 /solve/set/data-sampling yes 1600 yes yes no
 
 /solve/dual-time-iterate 200 200;[max timesteps, iterations per step]
 
-/file/read-case-data "C4_SBES_19M_T-1-08200.cas.h5"
+
+/file/read-case-data "C4_IDDES_19M_T-1-08200.cas.h5"
 /solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
 /file/read-case-data "C4_IDDES_19M_T-1-08400.cas.h5"
 /solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
@@ -359,8 +357,7 @@
 ;---------------------------------------------------------------- 15 rev complete
 
 
-
-/file/write-case-data "C4_SBES_complete.cas.h5"
+/file/write-case-data "C4_IDDES_complete.cas.h5"
 
 /parallel/timer/usage
 
