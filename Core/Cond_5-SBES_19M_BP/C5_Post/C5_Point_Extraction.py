@@ -46,4 +46,4 @@ for i in enumerate(C5_coordinates):
 
 
 
-# TODO: Why is it failing on some slices? out of zone?
+# TODO: Why is it failing on some slices? out of zone? - Turns out its bc cannot get cell centered values at points

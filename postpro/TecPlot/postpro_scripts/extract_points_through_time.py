@@ -28,6 +28,19 @@ class Point_Extraction:
             res = tp.data.query.probe_on_surface(self.points_file.transpose(),
                                                  zones=[z],
                                                  variables=self.vars_to_retrieve,
+                                                 probe_nearest=ProbeNearest.Node,
+                                                 num_nearest_nodes=20,
+                                                 tolerance=1e-5)
+            probed_values.append([z.solution_time] + list(res.data))
+        print("Elapsed: ", time.time() - self.start)
+        return pd.DataFrame(np.array(probed_values).transpose())
+
+    def df_points_center(self):
+        probed_values = []
+        for z in self.zones_to_search:
+            res = tp.data.query.probe_on_surface(self.points_file.transpose(),
+                                                 zones=[z],
+                                                 variables=self.vars_to_retrieve,
                                                  probe_nearest=ProbeNearest.Position)
             probed_values.append([z.solution_time] + list(res.data))
         print("Elapsed: ", time.time() - self.start)
@@ -35,15 +48,16 @@ class Point_Extraction:
 
 
 if __name__ == '__main__':
-    points_file = r"C:\Users\Joseph Tarriela\Documents\GitHub\FDA_Blood_Pump\postpro\C5_sampling_coordinates\C5_D3_Coordinates.txt"
+    points_file = r"C:\Users\Joseph Tarriela\Documents\GitHub\FDA_Blood_Pump\postpro\C5_sampling_coordinates\C5_D1_Coordinates.txt"
     zones_to_search = "blade-passage Step 1 Incr 0"
     vars_to_retrieve = "Magnitude Velocity"
     test_class = Point_Extraction(points_file_location=points_file,
                                   zones_to_search=zones_to_search,
                                   vars_to_retrieve=vars_to_retrieve)
-    df = test_class.df_points()
-    df = df.drop([0])
-    df = df.reset_index()
-    df['Mean'] = df.mean(axis=1)
+    df_node = test_class.df_points()
+    df_center=test_class.df_points_center()
+    # df = df.drop([0])
+    # df = df.reset_index()
+    # df['Mean'] = df.mean(axis=1)
 
 
