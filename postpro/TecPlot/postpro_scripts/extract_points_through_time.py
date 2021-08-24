@@ -35,10 +35,15 @@ class Point_Extraction:
 
 
 if __name__ == '__main__':
-    points_file = r"C:\Users\Joseph Tarriela\Documents\GitHub\FDA_Blood_Pump\postpro\C5_sampling_coordinates\C5_D1_Coordinates.txt"
+    points_file = r"C:\Users\Joseph Tarriela\Documents\GitHub\FDA_Blood_Pump\postpro\C5_sampling_coordinates\C5_D3_Coordinates.txt"
     zones_to_search = "blade-passage Step 1 Incr 0"
     vars_to_retrieve = "Magnitude Velocity"
     test_class = Point_Extraction(points_file_location=points_file,
                                   zones_to_search=zones_to_search,
                                   vars_to_retrieve=vars_to_retrieve)
     df = test_class.df_points()
+    df = df.drop([0])
+    df = df.reset_index()
+    df['Mean'] = df.mean(axis=1)
+
+
