@@ -27,10 +27,10 @@ class Point_Extraction:
         for z in self.zones_to_search:
             res = tp.data.query.probe_on_surface(self.points_file.transpose(),
                                                  zones=[z],
-                                                 variables=self.vars_to_retrieve,
-                                                 probe_nearest=ProbeNearest.Node,
-                                                 num_nearest_nodes=20,
-                                                 tolerance=1e-5)
+                                                 variables=self.vars_to_retrieve)
+                                                 # probe_nearest=ProbeNearest.Node,
+                                                 # num_nearest_nodes=10,
+                                                 # tolerance=1e-5)
             probed_values.append([z.solution_time] + list(res.data))
         print("Elapsed: ", time.time() - self.start)
         return pd.DataFrame(np.array(probed_values).transpose())
