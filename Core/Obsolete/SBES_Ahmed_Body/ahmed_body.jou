@@ -1,0 +1,288 @@
+;##########   Mesh Convergence Study   ##########;
+/file/set-tuiversion "20.1"
+
+/file/read-case Ahmed_body.cas.h5
+
+;##########   MODEL & SOLVER SETTINGS   ##########;
+/define/models/viscous/kw-sst yes
+
+;##########   Set Steady State Form   ##########;
+/define/models/steady yes ;STEADY STATE
+
+;##########   INCOMPRESSIBLE FLOW:: PRESSURE BASED SOLVER  ##########;
+/define/models/solver/density-based-implicit yes
+
+;##########   Velocity Inlet Boundary Conditions  ##########;
+/define/boundary-conditions/velocity-inlet inlet no no yes yes no 40 no 0 no yes 5 4.136 no 0
+
+;##########   Pressure Outlet Boundary Conditions  ##########;
+/define/boundary-conditions/pressure-outlet outlet yes no 0 no yes no yes 5 4.136 yes no no no
+
+;##########   Define Moving Walls, Wall Roughness, Wall Flux  ##########;
+/define/boundary-conditions/wall top no no no no 0 no 0.5
+/define/boundary-conditions/wall car_body no no no no 0 no 0.5
+/define/boundary-conditions/wall ground_slip no yes shear-bc-spec-shear no no 0 no 0.5 no 0 no 0 no 0
+/define/boundary-conditions/wall ground_no_slip no no no no 0 no 0.5
+/define/boundary-conditions/wall side no no no no 0 no 0.5
+
+
+/solve/set/flux-type 0 ; Roe-FDS
+
+;/solve/set> flux-type 3; (Low Diffusion Roe-FDS) Low diffusion Roe-FDS is used when the LES viscous model is enabled. It reduces the dissipation in LES calculations and is used only for subsonic flows.
+
+/solve/set/discretization-scheme/amg-c 1 ;
+/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
+/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
+
+;##########   Normalized Line Surfaces for Data Comparison   ##########;
+/surface/line-surface x/l_-1 -0.201 0 0 -0.201 0 2
+/surface/line-surface x/l_-0.9 -0.1809 0 0 -0.1809 0 2
+/surface/line-surface x/l_-0.8 -0.1608 0 0 -0.1608 0 2
+/surface/line-surface x/l_-0.7 -0.1407 0 0 -0.1407 0 2
+/surface/line-surface x/l_-0.6 -0.1206 0 0 -0.1206 0 2
+/surface/line-surface x/l_-0.5 -0.1005 0 0 -0.1005 0 2
+/surface/line-surface x/l_-0.4 -0.0804 0 0 -0.0804 0 2
+/surface/line-surface x/l_-0.3 -0.0603 0 0 -0.0603 0 2
+/surface/line-surface x/l_-0.2 -0.0402 0 0 -0.0402 0 2
+/surface/line-surface x/l_-0.1 -0.0201 0 0 -0.0201 0 2
+/surface/line-surface x/l_0 0 0 0 0 0 2
+/surface/line-surface x/l_0.1 0.0201 0 0 0.0201 0 2
+/surface/line-surface x/l_0.2 0.0402 0 0 0.0402 0 2
+/surface/line-surface x/l_0.3 0.0603 0 0 0.0603 0 2
+/surface/line-surface x/l_0.4 0.0804 0 0 0.0804 0 2
+/surface/line-surface x/l_0.5 0.1005 0 0 0.1005 0 2
+/surface/line-surface x/l_0.6 0.1206 0 0 0.1206 0 2
+/surface/line-surface x/l_0.7 0.1407 0 0 0.1407 0 2
+/surface/line-surface x/l_0.8 0.1608 0 0 0.1608 0 2
+/surface/line-surface x/l_0.9 0.1809 0 0 0.1809 0 2
+/surface/line-surface x/l_1 0.201 0 0 0.201 0 2
+/surface/line-surface x/l_1.1 0.2211 0 0 0.2211 0 2
+/surface/line-surface x/l_1.2 0.2412 0 0 0.2412 0 2
+/surface/line-surface x/l_1.3 0.2613 0 0 0.2613 0 2
+/surface/line-surface x/l_1.4 0.2814 0 0 0.2814 0 2
+/surface/line-surface x/l_1.5 0.3015 0 0 0.3015 0 2
+/surface/line-surface x/l_1.6 0.3216 0 0 0.3216 0 2
+/surface/line-surface x/l_1.7 0.3417 0 0 0.3417 0 2
+/surface/line-surface x/l_1.8 0.3618 0 0 0.3618 0 2
+/surface/line-surface x/l_1.9 0.3819 0 0 0.3819 0 2
+/surface/line-surface x/l_2 0.402 0 0 0.402 0 2
+
+;##########   Plane Surfaces for Mesh & Timestep Analysis   ##########;
+/surface/plane/zx-0.02 zx-plane 0.02
+/surface/plane/zx-0.04 zx-plane 0.04
+/surface/plane/zx-0.06 zx-plane 0.06
+/surface/plane/zx-0.08 zx-plane 0.08
+/surface/plane/zx-0.1 zx-plane 0.1
+/surface/plane/zx-0.12 zx-plane 0.12
+/surface/plane/zx-0.14 zx-plane 0.14
+/surface/plane/zx-0.16 zx-plane 0.16
+/surface/plane/zx-0.18 zx-plane 0.18
+/surface/plane/zx-0.2 zx-plane 0.2
+/surface/plane/zx-0.22 zx-plane 0.22
+/surface/plane/zx-0.24 zx-plane 0.24
+/surface/plane/zx-0.26 zx-plane 0.26
+/surface/plane/zx-0.28 zx-plane 0.28
+/surface/plane/zx-0.3 zx-plane 0.3
+/surface/plane/zx-0.32 zx-plane 0.32
+/surface/plane/zx-0.34 zx-plane 0.34
+/surface/plane/zx-0.36 zx-plane 0.36
+/surface/plane/zx-0.38 zx-plane 0.38
+/surface/plane/zx-0.4 zx-plane 0.4
+/surface/plane/zx-0.42 zx-plane 0.42
+/surface/plane/zx-0.44 zx-plane 0.44
+/surface/plane/zx-0.46 zx-plane 0.46
+/surface/plane/zx-0.48 zx-plane 0.48
+/surface/plane/zx-0.5 zx-plane 0.5
+/surface/plane/yz-0.4 yz-plane 0.4
+/surface/plane/yz-0.38 yz-plane 0.38
+/surface/plane/yz-0.36 yz-plane 0.36
+/surface/plane/yz-0.34 yz-plane 0.34
+/surface/plane/yz-0.32 yz-plane 0.32
+/surface/plane/yz-0.3 yz-plane 0.3
+/surface/plane/yz-0.28 yz-plane 0.28
+/surface/plane/yz-0.26 yz-plane 0.26
+/surface/plane/yz-0.24 yz-plane 0.24
+/surface/plane/yz-0.22 yz-plane 0.22
+/surface/plane/yz-0.2 yz-plane 0.2
+/surface/plane/yz-0.18 yz-plane 0.18
+/surface/plane/yz-0.16 yz-plane 0.16
+/surface/plane/yz-0.14 yz-plane 0.14
+/surface/plane/yz-0.12 yz-plane 0.12
+/surface/plane/yz-0.1 yz-plane 0.1
+/surface/plane/yz-0.08 yz-plane 0.08
+/surface/plane/yz-0.06 yz-plane 0.06
+/surface/plane/yz-0.04 yz-plane 0.04
+/surface/plane/yz-0.02 yz-plane 0.02
+/surface/plane/yz-0 yz-plane 0
+/surface/plane/yz--0.02 yz-plane -0.02
+/surface/plane/yz--0.04 yz-plane -0.04
+/surface/plane/yz--0.06 yz-plane -0.06
+/surface/plane/yz--0.08 yz-plane -0.08
+/surface/plane/yz--0.1 yz-plane -0.1
+/surface/plane/yz--0.12 yz-plane -0.12
+/surface/plane/yz--0.14 yz-plane -0.14
+/surface/plane/yz--0.16 yz-plane -0.16
+/surface/plane/yz--0.18 yz-plane -0.18
+/surface/plane/yz--0.2 yz-plane -0.2
+/surface/plane/yz--0.22 yz-plane -0.22
+/surface/plane/yz--0.24 yz-plane -0.24
+/surface/plane/yz--0.26 yz-plane -0.26
+/surface/plane/yz--0.28 yz-plane -0.28
+/surface/plane/yz--0.3 yz-plane -0.3
+/surface/plane/yz--0.32 yz-plane -0.32
+/surface/plane/yz--0.34 yz-plane -0.34
+/surface/plane/yz--0.36 yz-plane -0.36
+/surface/plane/yz--0.38 yz-plane -0.38
+/surface/plane/yz--0.4 yz-plane -0.4
+/surface/plane/yz--0.42 yz-plane -0.42
+/surface/plane/yz--0.44 yz-plane -0.44
+/surface/plane/yz--0.46 yz-plane -0.46
+/surface/plane/yz--0.48 yz-plane -0.48
+/surface/plane/yz--0.5 yz-plane -0.5
+/surface/plane/yz--0.52 yz-plane -0.52
+/surface/plane/yz--0.54 yz-plane -0.54
+/surface/plane/yz--0.56 yz-plane -0.56
+/surface/plane/yz--0.58 yz-plane -0.58
+/surface/plane/yz--0.6 yz-plane -0.6
+/surface/plane/yz--0.62 yz-plane -0.62
+/surface/plane/yz--0.64 yz-plane -0.64
+/surface/plane/yz--0.66 yz-plane -0.66
+/surface/plane/yz--0.68 yz-plane -0.68
+/surface/plane/yz--0.7 yz-plane -0.7
+/surface/plane/yz--0.72 yz-plane -0.72
+/surface/plane/yz--0.74 yz-plane -0.74
+/surface/plane/yz--0.76 yz-plane -0.76
+/surface/plane/yz--0.78 yz-plane -0.78
+/surface/plane/yz--0.8 yz-plane -0.8
+/surface/plane/yz--0.82 yz-plane -0.82
+/surface/plane/yz--0.84 yz-plane -0.84
+/surface/plane/yz--0.86 yz-plane -0.86
+/surface/plane/yz--0.88 yz-plane -0.88
+/surface/plane/yz--0.9 yz-plane -0.9
+/surface/plane/yz--0.92 yz-plane -0.92
+/surface/plane/yz--0.94 yz-plane -0.94
+/surface/plane/yz--0.96 yz-plane -0.96
+/surface/plane/yz--0.98 yz-plane -0.98
+/surface/plane/yz--1 yz-plane -1
+/surface/plane/yz--1.02 yz-plane -1.02
+/surface/plane/yz--1.04 yz-plane -1.04
+/surface/plane/yz--1.06 yz-plane -1.06
+/surface/plane/yz--1.08 yz-plane -1.08
+/surface/plane/yz--1.1 yz-plane -1.1
+/surface/plane/yz--1.12 yz-plane -1.12
+/surface/plane/yz--1.14 yz-plane -1.14
+/surface/plane/yz--1.16 yz-plane -1.16
+/surface/plane/yz--1.18 yz-plane -1.18
+/surface/plane/yz--1.2 yz-plane -1.2
+/surface/plane/yz--1.22 yz-plane -1.22
+/surface/plane/yz--1.24 yz-plane -1.24
+/surface/plane/yz--1.26 yz-plane -1.26
+/surface/plane/yz--1.28 yz-plane -1.28
+/surface/plane/yz--1.3 yz-plane -1.3
+/surface/plane/yz--1.32 yz-plane -1.32
+/surface/plane/yz--1.34 yz-plane -1.34
+/surface/plane/yz--1.36 yz-plane -1.36
+/surface/plane/yz--1.38 yz-plane -1.38
+/surface/plane/yz--1.4 yz-plane -1.4
+/surface/plane/yz--1.42 yz-plane -1.42
+/surface/plane/yz--1.44 yz-plane -1.44
+/surface/plane/yz--1.46 yz-plane -1.46
+/surface/plane/yz--1.48 yz-plane -1.48
+/surface/plane/yz--1.5 yz-plane -1.5
+
+
+
+;##########   Report Definition Monitors   ##########;
+/solve/report-definitions/add p-in surface-areaavg surface-names inlet () field pressure ()
+/solve/report-definitions/add p-out surface-areaavg surface-names outlet () field pressure ()
+/solve/report-definitions/add mass-flux flux-massflow zone-names inlet outlet () ()
+/solve/report-definitions/add max-vel volume-max zone-names enclosure () field velocity-magnitude ()
+/solve/monitors/force/set-drag-monitor drag-coeff yes car_body () yes yes drag-coeff-hist no no 1 0 0
+solve/monitors/force/set-lift-monitor lift-monitor yes car_body () yes yes lift-history no no 1 0 0
+
+
+;##########   Report Files   ##########;
+/solve/report-files/add/p-in active yes frequency 1 print yes report-defs p-in () file-name pressure-in ()
+/solve/report-files/add/p-out active yes frequency 1 print yes report-defs p-out () file-name pressure-out ()
+/solve/report-files/add/mass-flux active yes frequency 1 print yes report-defs mass-flux () file-name mass-flux ()
+/solve/report-files/add/max-vel-rotor active yes frequency 1 print yes report-defs max-vel () file-name max-vel ()
+
+;##########   Define Field Functions   ##########;
+/define/custom-field-functions/define "integral_length_scale" turb_kinetic_energy * sqrt(turb_kinetic_energy)/(turb_diss_rate+0.000000000000001)
+/define/custom-field-functions/define "l0_to_delta_ratio" integral_length_scale / cell_volume^(1/3)
+
+
+
+;##########   INITIALIZE CASE   ##########;
+/solve/initialize/hyb-initialization
+
+/file/write-case-data "Ahmed_body_case_init.cas.h5"
+
+;##########   Solve Steady State   ##########;
+/solve/iterate/5000
+
+/file/write-case-data "Ahmed_body_case_SS.cas.h5"
+
+;##########   Plot Data  ##########;
+/plot/plot/no Cumulative_dataset no yes 0 0 1 no no x-velocity x/l_-1 x/l_-0.9 x/l_-0.8 x/l_-0.7 x/l_-0.6 x/l_-0.5 x/l_-0.4 x/l_-0.3 x/l_-0.2 x/l_-0.1 x/l_0 x/l_0.1 x/l_0.2 x/l_0.3 x/l_0.4 x/l_0.5 x/l_0.6 x/l_0.7 x/l_0.8 x/l_0.9 x/l_1 x/l_1.1 x/l_1.2 x/l_1.3 x/l_1.4 x/l_1.5 x/l_1.6 x/l_1.7 x/l_1.8 x/l_1.9 x/l_2 ()
+/plot/plot/no vel_vs_zpos_-1 no yes 0 0 1 no no x-velocity x/l_-1 ()
+/plot/plot/no vel_vs_zpos_-0.9 no yes 0 0 1 no no x-velocity x/l_-0.9 ()
+/plot/plot/no vel_vs_zpos_-0.8 no yes 0 0 1 no no x-velocity x/l_-0.8 ()
+/plot/plot/no vel_vs_zpos_-0.7 no yes 0 0 1 no no x-velocity x/l_-0.7 ()
+/plot/plot/no vel_vs_zpos_-0.6 no yes 0 0 1 no no x-velocity x/l_-0.6 ()
+/plot/plot/no vel_vs_zpos_-0.5 no yes 0 0 1 no no x-velocity x/l_-0.5 ()
+/plot/plot/no vel_vs_zpos_-0.4 no yes 0 0 1 no no x-velocity x/l_-0.4 ()
+/plot/plot/no vel_vs_zpos_-0.3 no yes 0 0 1 no no x-velocity x/l_-0.3 ()
+/plot/plot/no vel_vs_zpos_-0.2 no yes 0 0 1 no no x-velocity x/l_-0.2 ()
+/plot/plot/no vel_vs_zpos_-0.1 no yes 0 0 1 no no x-velocity x/l_-0.1 ()
+/plot/plot/no vel_vs_zpos_0 no yes 0 0 1 no no x-velocity x/l_0 ()
+/plot/plot/no vel_vs_zpos_0.1 no yes 0 0 1 no no x-velocity x/l_0.1 ()
+/plot/plot/no vel_vs_zpos_0.2 no yes 0 0 1 no no x-velocity x/l_0.2 ()
+/plot/plot/no vel_vs_zpos_0.3 no yes 0 0 1 no no x-velocity x/l_0.3 ()
+/plot/plot/no vel_vs_zpos_0.4 no yes 0 0 1 no no x-velocity x/l_0.4 ()
+/plot/plot/no vel_vs_zpos_0.5 no yes 0 0 1 no no x-velocity x/l_0.5 ()
+/plot/plot/no vel_vs_zpos_0.6 no yes 0 0 1 no no x-velocity x/l_0.6 ()
+/plot/plot/no vel_vs_zpos_0.7 no yes 0 0 1 no no x-velocity x/l_0.7 ()
+/plot/plot/no vel_vs_zpos_0.8 no yes 0 0 1 no no x-velocity x/l_0.8 ()
+/plot/plot/no vel_vs_zpos_0.9 no yes 0 0 1 no no x-velocity x/l_0.9 ()
+/plot/plot/no vel_vs_zpos_1 no yes 0 0 1 no no x-velocity x/l_1 ()
+/plot/plot/no vel_vs_zpos_1.1 no yes 0 0 1 no no x-velocity x/l_1.1 ()
+/plot/plot/no vel_vs_zpos_1.2 no yes 0 0 1 no no x-velocity x/l_1.2 ()
+/plot/plot/no vel_vs_zpos_1.3 no yes 0 0 1 no no x-velocity x/l_1.3 ()
+/plot/plot/no vel_vs_zpos_1.4 no yes 0 0 1 no no x-velocity x/l_1.4 ()
+/plot/plot/no vel_vs_zpos_1.5 no yes 0 0 1 no no x-velocity x/l_1.5 ()
+/plot/plot/no vel_vs_zpos_1.6 no yes 0 0 1 no no x-velocity x/l_1.6 ()
+/plot/plot/no vel_vs_zpos_1.7 no yes 0 0 1 no no x-velocity x/l_1.7 ()
+/plot/plot/no vel_vs_zpos_1.8 no yes 0 0 1 no no x-velocity x/l_1.8 ()
+/plot/plot/no vel_vs_zpos_1.9 no yes 0 0 1 no no x-velocity x/l_1.9 ()
+/plot/plot/no vel_vs_zpos_2 no yes 0 0 1 no no x-velocity x/l_2 ()
+
+
+
+/report/summary "Report_Ahmed_Body.txt"
+
+
+;##########  Refine Y+ and Solve Steady State  ##########;
+/solve/cell-registers/add/"yplus" type yplus-ystar max-allowed 1 min-allowed 0.0001 wall-zones car_body () () ()
+/solve/cell-registers/refine yplus
+
+/define/custom-field-functions/define "time_scale" cell_volume^(1/3)/(velocity_magnitude + 0.000000000000001)
+/define/custom-field-functions/define "integral_length_scale" turb_kinetic_energy * sqrt(turb_kinetic_energy)/(turb_diss_rate+0.000000000000001)
+/define/custom-field-functions/define "l0_to_delta_ratio" integral_length_scale / cell_volume^(1/3)
+/define/custom-field-functions/define "test_courant2" cell_volume^(1/3)*.00001/(*velocity_magnitude)
+/define/custom-field-functions/define "k_resolved" (rmse_x_velocity^2 + rmse_y_velocity^2 +rmse_z_velocity^2)*0.5
+/define/custom-field-functions/define "k_sgs_wale" ((0.5*(cell_volume^(1/3))*strain_rate_mag)^2)/3
+/define/custom-field-functions/define "percent_k_resolved" k_resolved/(k_resolved+k_sgs_wale)*100
+
+/plot/histogram/ y-plus 0 50 25 no car_body ()
+####################################
+
+/define/models/viscous kw-sst yes
+
+/define/models/viscous/turbulence-expert/turb-add-sbes-sdes yes
+/define/models/viscous/turbulence-expert/sbes-sdes-hybrid-model 2
+/define/models/viscous/turbulence-expert/sbes-sgs-option 3
+
+
+
+quit

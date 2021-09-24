@@ -1,0 +1,123 @@
+;##########   Mesh Convergence Study   ##########;
+/file/set-tuiversion "20.1"
+
+/file/read-case blood_pump_fine.cas.h5
+
+;##########   MODEL & SOLVER SETTINGS   ##########;
+/define/models/viscous/kw-sst yes
+
+;##########   Set Steady State Form   ##########;
+/define/models/steady yes ;STEADY STATE
+
+;##########   SET TRANSIENT FORM  ##########;
+;/define/models/u2ob yes ;UNSTEADY 2ND ORDER BOUNDED TRANSIENT FORMULATION
+
+;##########   INCOMPRESSIBLE FLOW:: PRESSURE BASED SOLVER  ##########;
+/define/models/solver/pressure-based yes
+
+;##########   USER DEFINED MEMORY ##########;
+/define/user-defined/user-defined-memory 5
+
+;##########   UDF Compile ##########;
+/define/user-defined/compiled-functions compile libudf yes "CY_Hemolysis_UDF.c" "" "udf.h" ""
+/define/user-defined/compiled-functions load libudf
+
+;##########   Hook Function ##########;
+/define/user-defined/function-hooks/adjust "BloodDamage::libudf" ""
+
+;##########   User Defined Scalar ##########;
+/define/user-defined/user-defined-scalars 2 no no yes "mass flow rate" yes "mass flow rate"
+
+
+;##########   CHANGE AIR TO BLOOD & UDS Diffusivity  ##########;
+/define/materials/change-create air blood yes constant 1056 no no yes constant 0.0034 no no yes defined-per-uds 0 constant 0 1 constant 0 -1 no yes
+
+;##########   Velocity Inlet Named Expression  ##########;
+/define/named-expressions/add inlet_profile_2_5L definition "780264109329.81[m^-4 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**5-11253314468.816[m^-3 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**4+51995094.410294[m^-2 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**3-100228.08532706[m^-1 s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))**2+64.857019836389[s^-1]*(sqrt(Position.y**2+(Position.z-0.294[m])**2))+0.54721263111368[m s^-1]" description "Velocity inlet profile 2.5L 2500RPM" ()
+
+;##########   Rotor Velocity Named Expression  ##########;
+/define/named-expressions/add rotor_speed definition "2500[revolution min^-1] * 0.104719755[rad min revolution^-1 sec^-1]" description "RPM to Rad/sec for rotor" ()
+
+;##########   Velocity Inlet Boundary Conditions  ##########;
+/define/boundary-conditions/velocity-inlet inlet no no yes yes no "inlet_profile_2_5L" no 0 no no no yes 4 0.012 no yes no yes no 0 no 0
+
+;##########   Pressure Outlet Boundary Conditions  ##########;
+/define/boundary-conditions/pressure-outlet outlet yes no 0 no yes no no yes 4 0.012 yes yes no 0 no 0 yes no no no
+
+;##########   Cell Zone Def Rotor Rotation & Source Terms ##########;
+/define/boundary-conditions/fluid inflow no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 1 no no no no no
+
+/define/boundary-conditions/fluid rotor no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no yes -1 no "rotor_speed" no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 1 none no no no no no no
+
+/define/boundary-conditions/fluid volute no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_EDS::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 0 no no no no no
+
+
+;##########   Define Moving Walls, Wall Roughness, Wall Flux  ##########;
+/define/boundary-conditions/wall rotor_body yes motion-bc-moving no no no yes no no 0.0000006 no 0.5 yes yes no 0 no 0 no "rotor_speed" 0 0 0 0 0 1
+
+/define/boundary-conditions/wall inflow_wall no no no no 0.0000006 no 0.5 yes yes no 0 no 0
+/define/boundary-conditions/wall volute_wall no no no no 0.0000006 no 0.5 yes yes no 0 no 0
+/define/boundary-conditions/wall rotor_wall no no no no 0.0000006 no 0.5 yes yes no 0 no 0
+
+
+;define/boundary-conditions/modify-zones/mrf-to-sliding-mesh
+
+;### SET SOLVER ###; -- current run: COUPLED
+/solve/set/p-v-coupling 24 ;Coupled
+
+;##########   FOR SIMPLE & COUPLED SOLVER   ##########;
+/solve/set/discretization-scheme/pressure 12 ;SECOND ORDER PRESSURE
+/solve/set/discretization-scheme/mom 1 ;SECOND ORDER MOMENTUM
+/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
+/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
+/solve/set/discretization-scheme/uds-0 1 ;SECOND ORDER DISCRETIZATION
+/solve/set/discretization-scheme/uds-1 1 ;SECOND ORDER DISCRETIZATION
+
+;##########   LINE SURFACES   ##########;
+/surface/line-surface quadrant-1 0 0 0.006562 0.03 -0.03 0.006562
+/surface/line-surface quadrant-2 0 0 0.006562 -0.03 -0.03 0.006562
+/surface/plane-surface blade-passage xy-plane 0.006562
+
+;##########   Convergence Criteria   ##########;
+/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.000000001 0.000000001
+
+;##########   Report Definition Monitors   ##########;
+/solve/report-definitions/add p-in surface-massavg surface-names inlet () field total-pressure ()
+/solve/report-definitions/add p-out surface-massavg surface-names outlet () field total-pressure ()
+/solve/report-definitions/add mass-flux flux-massflow zone-names inlet outlet () ()
+/solve/report-definitions/add max-vel-rotor volume-max zone-names rotor () field velocity-magnitude ()
+
+;##########   Report Files   ##########;
+/solve/report-files/add/p-in active yes frequency 1 print yes report-defs p-in () file-name pressure-in ()
+/solve/report-files/add/p-out active yes frequency 1 print yes report-defs p-out () file-name pressure-out ()
+/solve/report-files/add/mass-flux active yes frequency 1 print yes report-defs mass-flux () file-name mass-flux ()
+/solve/report-files/add/max-vel-rotor active yes frequency 1 print yes report-defs max-vel-rotor () file-name max-vel-rotor ()
+
+
+
+;##########   Disable UDS Equations   ##########;
+/solve/set/equations uds-0 no
+/solve/set/equations uds-1 no
+
+;##########   INITIALIZE CASE   ##########;
+/solve/initialize/hyb-initialization
+
+/file/write-case-data "blood_pump_fine_out_1.cas.h5"
+
+;##########   Solve Steady State   ##########;
+/solve/iterate/5000
+
+;##########   Disable UDS Equations   ##########;
+/solve/set/equations uds-0 yes
+/solve/set/equations uds-1 yes
+/solve/set/equations flow no
+/solve/set/equations kw no
+
+;##########   Solve UDS Steady State   ##########;
+/solve/iterate/200
+
+/plot/plot no vel-q1 no no no velocity-magnitude yes 1 0 0 quadrant-1 ()
+/plot/plot no vel-q2 no no no velocity-magnitude yes 1 0 0 quadrant-2 ()
+/file/write-case-data "blood_pump_fine_out_2.cas.h5"
+
+exit
