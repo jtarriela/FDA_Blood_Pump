@@ -1,0 +1,352 @@
+;##########   Mesh Convergence Study   ##########;
+/file/set-tuiversion "20.1"
+
+/file/read-case "C4_KW_19M_init.cas.h5"
+
+;##########   MODEL & SOLVER SETTINGS   ##########;
+/define/models/viscous/kw-sst yes
+
+;##########   SET TRANSIENT FORM  ##########;
+/define/models/u2ob yes ;UNSTEADY 2ND ORDER BOUNDED TRANSIENT FORMULATION
+
+;##########   INCOMPRESSIBLE FLOW:: PRESSURE BASED SOLVER  ##########;
+/define/models/solver/pressure-based yes
+
+;### SET SOLVER ###; -- current run: COUPLED
+/solve/set/p-v-coupling 24 ;Coupled
+
+;##########   FOR SIMPLE & COUPLED SOLVER   ##########;
+/solve/set/discretization-scheme/pressure 12 ;SECOND ORDER PRESSURE
+/solve/set/discretization-scheme/mom 1 ;SECOND ORDER MOMENTUM
+/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
+/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
+/solve/set/discretization-scheme/uds-0 1 ;SECOND ORDER DISCRETIZATION
+/solve/set/discretization-scheme/uds-1 1 ;SECOND ORDER DISCRETIZATION
+
+;##########   Line Exports   ##########;
+/file/transient-export/ascii q1 quadrant-1 () velocity-magnitude () yes no q1 time-step 400 time-step
+/file/transient-export/ascii q2 quadrant-2 () velocity-magnitude () yes no q2 time-step 400 time-step
+/file/transient-export/ascii diff-1 diff-1 () velocity-magnitude () yes no diff-1 time-step 400 time-step
+/file/transient-export/ascii diff-2 diff-2 () velocity-magnitude () yes no diff-2 time-step 400 time-step
+/file/transient-export/ascii diff-3 diff-3 () velocity-magnitude () yes no diff-3 time-step 400 time-step
+/file/transient-export/ascii diff-4 diff-4 () velocity-magnitude () yes no diff-4 time-step 400 time-step
+
+: ##### Report File Frequency ######
+/solve/report-files/edit max-vel-rotor frequency-of time-step frequency 10 ()
+/solve/report-files/edit p-in frequency-of time-step frequency 10 ()
+/solve/report-files/edit p-out frequency-of time-step frequency 10 ()
+/solve/report-files/edit mass-flux frequency-of time-step frequency 10 ()
+/solve/report-files/edit gw-hemolysis frequency-of time-step frequency 10 ()
+/solve/report-files/edit ho-hemolysis frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-pressure-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-e frequency-of time-step frequency 10 ()
+
+
+/solve/report-files/edit point-shear-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-GW-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-e frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-out frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-vel-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-tau_vm-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-e frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-out frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-HO-a  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-b  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-c  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-d  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-e  frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-HO-a  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-b  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-c  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-d  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-e  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-out  frequency-of time-step frequency 10 ()
+
+
+/solve/execute-commands/add-edit proc-stats 20 "time-step" "/report/system/proc-stats"
+/solve/execute-commands/add-edit partition-info 20 "time-step" "/parallel/partition/print-active-partitions"
+/solve/execute-commands/add-edit usage-stats 20 "time-step" "/parallel/timer/usage"
+/solve/execute-commands/add-edit usage-reset 20 "time-step" "/parallel/timer/reset"
+/solve/execute-commands/add-edit bandwidth 20 "time-step" "/parallel/bandwidth"
+/solve/execute-commands/add-edit bandwidth 20 "time-step" "/parallel/latency"
+
+;##########   Convergence Criteria   ##########;
+/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.0000001 0.0000001
+
+/solve/monitors/residual/reset yes
+/solve/set/equations uds-0 yes
+/solve/set/equations uds-1 yes
+/solve/set/equations flow yes
+
+;---------------------------------------------------------------- 0 rev complete
+;#### every 1600 time-step is 1 revolution, 400 per blade pass
+;#### reload case every 1/2 revolution
+;#### re-partition every 1/8 revolution
+
+/solve/set/time-step 0.000015
+/solve/set/reporting-interval 1
+/file/auto-save/data-frequency 200
+/file/auto-save/case-frequency each-time
+/file/auto-save/root-name "C4_19M_KW_T"
+/file/auto-save/retain-most-recent-files yes
+
+
+
+/solve/dual-time-iterate 800 200;[max timesteps, iterations per step]
+
+
+
+;---------------------------------------------------------------- .5 rev complete
+
+
+
+/file/read-case-data "C4_19M_KW_T-1-00800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 1.0 rev complete
+
+
+/file/read-case-data "C4_19M_KW_T-1-01600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 1.5 rev complete
+
+
+
+/file/read-case-data "C4_19M_KW_T-1-02400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 2.0 rev complete
+
+
+/file/read-case-data "C4_19M_KW_T-1-03200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 2.5 rev complete
+
+
+/file/read-case-data "C4_19M_KW_T-1-04000.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 3.0 rev complete
+
+
+/file/read-case-data "C4_19M_KW_T-1-04800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 3.5 rev complete
+
+
+/file/read-case-data "C4_19M_KW_T-1-05600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 4.0 rev complete
+
+
+/file/read-case-data "C4_19M_KW_T-1-06400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 4.5 rev complete
+
+
+/file/read-case-data "C4_19M_KW_T-1-07200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 5.0 rev complete
+
+
+
+/file/read-case-data "C4_19M_KW_T-1-08000.cas.h5"
+/solve/set/data-sampling yes 1600 yes yes no
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+
+/file/read-case-data "C4_19M_KW_T-1-08200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-08400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-08600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-08800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-09000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-09200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-09400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-09600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-09800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-10000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-10200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-10400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-10600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-10800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-11000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-11200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-11400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-11600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-11800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-12000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-12200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-12400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-12600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-12800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-13000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-13200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-13400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-13600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-13800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-14000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-14200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-14400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-14600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-14800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-15000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-15200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-15400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-15600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-15800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-16000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-16200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-16400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-16600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-16800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-17000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-17200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-17400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-17600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-17800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-18000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-18200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-18400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-18600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-18800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-19000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-19200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-19400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-19600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-19800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-20000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-20200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-20400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-20600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-20800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-21000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-21200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-21400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-21600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-21800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-22000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-22200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-22400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-22600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-22800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-23000.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-23200.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-23400.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-23600.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+/file/read-case-data "C4_19M_KW_T-1-23800.cas.h5"
+/solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
+
+
+/file/write-case-data "C4_complete.cas.h5"
