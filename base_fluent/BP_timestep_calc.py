@@ -2,9 +2,9 @@ from pint import UnitRegistry
 ureg = UnitRegistry()
 Q_ = ureg.Quantity
 
-case={'rpm': Q_(2500,'rpm'),
+case={'rpm': Q_(3500,'rpm'),
       'blades': 4,
-      'timestep': Q_(5E-5,'sec')}
+      'timestep': Q_(1.5E-5,'sec')}
 
 rps = case['rpm'].to('rps') #revolutions per second
 sec_per_rev = 1/rps * Q_(1,'revolutions')
@@ -30,6 +30,7 @@ for i in enumerate(deg):
       # print(case['deg per second'])`
       sec_per_deg = sec_per_rev / Q_(360,'degrees')
       time_to_travel_x_deg = case['deg travel'] * sec_per_deg
+
 
       print(f'Timestep for {case["deg travel"]} of travel: {round(time_to_travel_x_deg,7)}')
 
