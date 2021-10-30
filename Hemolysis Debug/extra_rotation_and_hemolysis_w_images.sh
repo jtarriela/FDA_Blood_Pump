@@ -1,10 +1,23 @@
-/file/read-case-data "C5_SBES_19M_T-1-24000.cas.h5"
+#!/bin/bash
+#
+#SBATCH --comment=mesh_convg
+#SBATCH --qos=bfbsm19
+#SBATCH --partition=bfbsm_2019
+
+#SBATCH --nodes=8
+#SBATCH --sockets-per-node=2
+#SBATCH --ntasks-per-node=24
+#SBATCH --mem-per-cpu=7500
+#SBATCH --job-name=C5_19T
+#SBATCH --output=C5-19
+#SBATCH --time=355:00:00
 
 
-/solve/execute-commands/add-edit proc-stats 4 "time-step" "/report/system/proc-stats"
-/solve/execute-commands/add-edit partition-info 4 "time-step" "/parallel/partition/print-active-partitions"
-/solve/execute-commands/add-edit usage-stats 4 "time-step" "/parallel/timer/usage"
-/solve/execute-commands/add-edit usage-reset 4 "time-step" "/parallel/timer/reset"
-/solve/execute-commands/add-edit bandwidth 4 "time-step" "/parallel/bandwidth"
+#### SLURM 2 node, 24 processor per node Ansys Fluent test to run for 30min.
+module purge
+module add apps/ansys/2021r2
 
-/solve/dual-time-iterate 1600 120;[max timesteps, iterations per step]
+# Create our hosts file ala slurm
+srun hostname -s |sort -V > $(pwd)/slurmhosts.$SLURM_JOB_ID.txt
+
+time fluent 3ddp -gu -t${SLURM_NTASKS} -slurm -pib.infinipath -mpi=ibmmpi -cflush -platform=intel -cnf=$(pwd)/slurmhosts.$SLURM_JOB_ID.txt -i C5_T_SBES_19M_22800_cont.jou

@@ -115,4 +115,39 @@ dS[eqn] = 0;
 return source;
 }
 
+DEFINE_SOURCE(GW_model,c,t,dS,eqn)
+{
+real C_term, Tau_term, source;
+
+C_term = pow(C_GW,1/beta_GW);
+Tau_term = pow(C_UDMI(c,t,0),alpha_GW/beta_GW);
+
+/* C*T*rho */
+source = C_term*Tau_term*C_R(c,t);
+
+dS[eqn] = 0;
+
+
+return source;
+}
+
+/* Wu EDS */
+/* Tau_eff = e_viscous_dissipation + e_turbulent_kinetic_dissipation
+current model disregards viscous dissipation, fluent energy model off */
+
+DEFINE_SOURCE(GW_HO,c,t,dS,eqn)
+{
+real C_term, Teff_term, source;
+
+C_term = pow(C_HO,1/beta_HO);
+Teff_term = pow(C_UDMI(c,t,0),alpha_HO/beta_HO);
+
+
+source = C_term*Teff_term*C_R(c,t);
+
+dS[eqn] = 0;
+
+return source;
+}
+
 
