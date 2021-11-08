@@ -4,16 +4,14 @@ import shutil
 import hashlib
 
 # todo: get files to use
-filenames = [os.path.basename(x) for x in glob.glob(r"/Users/jdtarriela/Desktop/IC5/22400-24000/*.out")]
+filenames = [os.path.basename(x) for x in glob.glob(r"/Users/jdtarriela/Desktop/KW/C5/3240-3600/*.out")]
 
-dir_list_1 = [r'/Users/jdtarriela/Desktop/IC5/22400-24000/',
-            r'/Users/jdtarriela/Desktop/IC5/15000-22400/',
-            r'/Users/jdtarriela/Desktop/IC5/8600-14800/',
-              r'/Users/jdtarriela/Desktop/IC5/8400-8600/',
-              r'/Users/jdtarriela/Desktop/IC5/0-8400/']
+dir_list_1 = [r'/Users/jdtarriela/Desktop/KW/C5/3240-3600/',
+              r'/Users/jdtarriela/Desktop/KW/C5/720-3240/',
+              r'/Users/jdtarriela/Desktop/KW/C5/0-720/']
 
-path_input = r'/Users/jdtarriela/Desktop/IC5/temp_files/'
-path_output = r'/Users/jdtarriela/Desktop/IC5/Final_residuals/'
+path_input = r'/Users/jdtarriela/Desktop/KW/C5/temp_files/'
+path_output = r'/Users/jdtarriela/Desktop/KW/C5/Final_residuals/'
 
 # Check whether the
 # specified path is
