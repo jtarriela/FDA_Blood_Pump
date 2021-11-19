@@ -1,0 +1,38 @@
+/display/objects/create contour current surfaces-list blade-passage () field gw-from-zero-pfhb_mg-per-dL range-option auto-range-off clip-to-range? no maximum 70 minimum 1 () color-map color "bgr" log-scale? yes  position 0 length 1.2 width 6 position 0 () ()
+
+/display/set/picture/driver png
+/display/set/picture/landscape yes
+/display/set/picture/use-window-resolution? no
+/display/set/picture/x-resolution 3000
+/display/set/picture/y-resolution 2160
+
+/display/set/colors/background "white"
+
+;/display/objects/display velmag_bp
+/views/restore-view front
+/views/auto-scale
+/display/views/camera/zoom-camera 4
+/display/views/camera/dolly-camera 0.1 0 0
+;/views/save-view bp-contour
+
+;###### Display and save first image
+/display/save-picture turb-visc-ratio-%t-kw.png
+ok
+
+
+/surface/iso-surface raw-q-criterion q-crit () 2244 3002 () 1.5e6 ()
+/display/objects/create contour vel_qcrit surfaces-list q-crit () field velocity-magnitude color-map color "bgr" length 1.2 width 6 position 0 () ()
+/display/objects/display vel_qcrit
+/views/restore-view front
+/views/auto-scale
+/views/camera orbit-camera -5 -15
+/views/auto-scale
+/views/camera orbit-camera -2.5 -0
+/views/auto-scale
+/views/save-view qcrit-contour
+
+
+;1:6 ratio / bgr modern
+
+/display/save-picture vel_qcrit-%t-iddes.png
+/display/save-picture vel_qcrit-%t-sbes.png
