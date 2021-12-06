@@ -1,0 +1,348 @@
+;##########   Mesh Convergence Study   ##########;
+/file/set-tuiversion "20.1"
+
+/file/read-case-data "C5_SBES_19M_T.cas.h5"
+
+/define/models/u2ob yes
+/define/models/viscous kw-sst yes
+
+/define/models/viscous/turbulence-expert/turb-add-sbes-sdes yes
+/define/models/viscous/turbulence-expert/sbes-sdes-hybrid-model 2
+/define/models/viscous/turbulence-expert/sbes-sgs-option 3
+
+/define/boundary-conditions/modify-zones/mrf-to-sliding-mesh rotor_geometry
+/define/named-expressions/add time_step_size definition "3[s]/280000" description "time step size for 1600 time step per rev" ()
+
+/define/custom-field-functions/define "k_resolved" (rmse-x-velocity^2 + rmse-y-velocity^2 +rmse-z-velocity^2)*0.5
+;/define/custom-field-functions/define
+;/define/custom-field-functions/define "k_sgs_wale" ((0.5*(cell-volume^(1/3))*strain-rate-mag)^2)/3
+;/define/custom-field-functions/define "percent_k_resolved" k-resolved/(k_resolved+k_sgs_wale)*100
+
+/surface/plane-surface blade-passage xy-plane 0.0065620000000000000000
+
+/file/transient-export/ascii q1 quadrant-1 () velocity-magnitude () yes no q1 time-step 400 time-step
+/file/transient-export/ascii q2 quadrant-2 () velocity-magnitude () yes no q2 time-step 400 time-step
+/file/transient-export/ascii diff-1 diff-1 () velocity-magnitude () yes no diff-1 time-step 400 time-step
+/file/transient-export/ascii diff-2 diff-2 () velocity-magnitude () yes no diff-2 time-step 400 time-step
+/file/transient-export/ascii diff-3 diff-3 () velocity-magnitude () yes no diff-3 time-step 400 time-step
+/file/transient-export/ascii diff-4 diff-4 () velocity-magnitude () yes no diff-4 time-step 400 time-step
+
+
+;SIMPLEC
+/solve/set/p-v-coupling 21
+C5_T_SBES_19M.jou
+;CHANGE UNDER RELAXATION TO NEAR 1
+/solve/set/under-relaxation/pressure 0.8
+/solve/set/under-relaxation/mom 0.8
+/solve/set/discretization-scheme/pressure 12 ;SECOND ORDER PRESSURE
+/solve/set/discretization-scheme/mom 7 ;BOUNDED CENTRAL DIFFERENCING
+/solve/set/discretization-scheme/k 1 ;SECOND ORDER TURBULENT KINETIC ENERGY
+/solve/set/discretization-scheme/omega 1 ;SECOND ORDER SPECIFIC DISSIPATION RATE
+
+;##########   Convergence Criteria   ##########;
+/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.00001 0.00001
+
+/solve/report-files/edit gw-hemolysis frequency-of time-step frequency 10 ()
+/solve/report-files/edit ho-hemolysis frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit max-vel-rotor frequency-of time-step frequency 10 ()
+/solve/report-files/edit p-in frequency-of time-step frequency 10 ()
+/solve/report-files/edit p-out frequency-of time-step frequency 10 ()
+/solve/report-files/edit mass-flux frequency-of time-step frequency 10 ()
+/solve/report-files/edit gw-hemolysis frequency-of time-step frequency 10 ()
+/solve/report-files/edit ho-hemolysis frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-pressure-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-shear-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-GW-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-vel-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-tau_vm-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-HO-a  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-b  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-c  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-d  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-e  frequency-of time-step frequency 10 ()
+
+/solve/execute-commands/add-edit proc-stats 20 "time-step" "/report/system/proc-stats"
+/solve/execute-commands/add-edit partition-info 20 "time-step" "/parallel/partition/print-active-partitions"
+/solve/execute-commands/add-edit usage-stats 20 "time-step" "/parallel/timer/usage"
+/solve/execute-commands/add-edit usage-stats 20 "time-step" "/parallel/timer/reset"
+/solve/execute-commands/add-edit bandwidth 20 "time-step" "/parallel/bandwidth"
+/solve/execute-commands/add-edit bandwidth 20 "time-step" "/parallel/latency"
+/solve/execute-commands/add-edit repartition 200 "time-step" "/parallel/partition/method metis"
+/solve/execute-commands/add-edit load-partition 200 "time-step" "/parallel/partition/use-stored-partition"
+/solve/execute-commands/add-edit partition-to-arch 200 "time-step" "/parallel/partition/reorder-partitions-to-architecture"
+
+
+
+
+
+
+;---------------------------------------------------------------- 0 rev complete
+;#### every 1600 time-step is 1 revolution, 400 per blade pass
+;#### reload case every 1/2 revolution
+;#### re-partition every 1/8 revolution
+
+
+/solve/set/time-step "time_step_size"
+/solve/set/reporting-interval 1
+/file/auto-save/data-frequency 200
+/file/auto-save/case-frequency each-time
+/file/auto-save/root-name "C5_SBES_19M_T"
+/file/auto-save/retain-most-recent-files yes
+
+/solve/monitors/residual/reset yes
+/solve/set/equations uds-0 yes
+/solve/set/equations uds-1 yes
+/solve/set/equations flow yes
+
+/solve/dual-time-iterate 800 200;[max timesteps, iterations per step]
+
+
+
+;---------------------------------------------------------------- .5 rev complete
+
+
+
+/file/read-case-data "C5_SBES_19M_T-00800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 1.0 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-01600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 1.5 rev complete
+
+
+
+/file/read-case-data "C5_SBES_19M_T-02400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 2.0 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-03200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 2.5 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-04000.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 3.0 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-04800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 3.5 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-05600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 4.0 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-06400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 4.5 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-07200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 5.0 rev complete
+
+
+
+/file/read-case-data "C5_SBES_19M_T-08000.cas.h5"
+
+/file/transient-export/tecplot blade_passage blade-passage () velocity-magnitude z-coordinate x-coordinate y-coordinate() blade_pass_export time-step 400 time-step
+
+
+/solve/set/data-sampling yes 1600 yes yes no
+
+/solve/dual-time-iterate 800 200;[max timesteps, iterations per step]
+
+
+
+;---------------------------------------------------------------- 5.5 rev complete
+
+
+
+/file/read-case-data "C5_SBES_19M_T-08800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 6.0 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-09600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 6.5 rev complete
+
+
+
+/file/read-case-data "C5_SBES_19M_T-10400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 7.0 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-11200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 7.5 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-12000.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 8 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-12800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 8.5 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-13600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 9 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-14400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 9.5 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-15200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 10 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-16000.cas.h5"
+/solve/dual-time-iterate 800 200;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 10.5 rev complete
+
+
+
+/file/read-case-data "C5_SBES_19M_T-16800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 11.0 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-17600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;----------------------------------------------------------------11.5 rev complete
+
+
+
+/file/read-case-data "C5_SBES_19M_T-18400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 12.0 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-19200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 12.5 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-20000.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 13 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-20800.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 13.5 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-21600.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+;---------------------------------------------------------------- 14 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-22400.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 14.5 rev complete
+
+
+/file/read-case-data "C5_SBES_19M_T-23200.cas.h5"
+/solve/dual-time-iterate 800 120;[max timesteps, iterations per step]
+
+
+;---------------------------------------------------------------- 15 rev complete
+
+
+
+/file/write-case-data "C5_complete.cas.h5"
+
+/parallel/timer/usage
+
+/report/summary "XXXXXX.txt"
+
+/file/write-case-data "XXXXX.cas.h5"
+
+quit
