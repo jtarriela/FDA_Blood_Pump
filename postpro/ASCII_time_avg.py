@@ -88,3 +88,9 @@ class ascii_averaging:
         # Averages Y position of cells in bins
         # Averages Velocity of cells in bins
         return df_appended
+
+if __name__ == "__main__":
+    file_paths = glob.glob(r"/Users/jdtarriela/Downloads/Q1-c5/Q2/*")
+    test = ascii_averaging(file_paths)
+    test_df = test.blade_quadrant_ave()
+    test_df.to_csv(path_or_buf='/Users/jdtarriela/Downloads/Q1-c5/Q2/binned_data.csv', sep=',')
