@@ -2,12 +2,11 @@ from pint import UnitRegistry
 ureg = UnitRegistry()
 Q_ = ureg.Quantity
 
-<<<<<<< HEAD
-=======
-case={'rpm': Q_(3500,'rpm'),
-      'blades': 4,
-      'timestep': Q_(1.5E-5,'sec')}
->>>>>>> 31debdeba9e4cd697e186c5bfc8c5348cd070848
+#
+# case={'rpm': Q_(3500,'rpm'),
+#       'blades': 4,
+#       'timestep': Q_(1.5E-5,'sec')}
+
 
 def spec_ts(case):
       rps = case['rpm'].to('rps') #revolutions per second
@@ -40,8 +39,6 @@ def ts_given_deg(case,deg):
             print(f'Timestep for {case["deg travel"]} of travel: {round(time_to_travel_x_deg,7)} at {case["rpm"]}')
 
 
-<<<<<<< HEAD
-
 if __name__ == "__main__":
       case = {'rpm': Q_(3500, 'rpm'),
               'blades': 4,
@@ -58,9 +55,8 @@ if __name__ == "__main__":
       case['timestep']=Q_(4.76e-05, 'sec')
 
       spec_ts(case)
-=======
-      print(f'Timestep for {case["deg travel"]} of travel: {round(time_to_travel_x_deg,7)}')
->>>>>>> 31debdeba9e4cd697e186c5bfc8c5348cd070848
+
+      # print(f'Timestep for {case["deg travel"]} of travel: {round(time_to_travel_x_deg,7)}')
 
 
 

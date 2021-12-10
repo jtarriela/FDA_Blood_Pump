@@ -22,6 +22,9 @@ def import_quad_dict():
                 quad_temp[quadrant] = df.sort_values(['bin_centres'])
             quad_ascii[str2] = quad_temp.copy()
 
+    print(key_list)
+
+
 
     return quad_ascii
 
@@ -77,8 +80,8 @@ def import_experimental_dict(str):
 
 
 if __name__ == "__main__":
-    # quad_ascii = import_quad_dict()
-    diff_ascii = import_diff_dict()
+    quad_ascii = import_quad_dict()
+    # diff_ascii = import_diff_dict()
 
     # condition_list_exp = ['C1', 'C4', 'C5']
     # C1_Experimental = import_experimental_dict('C1')

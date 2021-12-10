@@ -27,9 +27,18 @@
 ;/define/custom-field-functions/list-valid-cell-function-names
 /define/custom-field-functions/define "gw-pfhb_mg-per-dL" (uds_0_scalar/1035)^(.758)*11500
 /define/custom-field-functions/define "gw-from-zero-pfhb_mg-per-dL" (uds_2_scalar/1035)^(.758)*11500
-/define/custom-field-functions/define "resolved-tke" .5*(rmse_x_velocity^2 + rmse_y_velocity^2 + rmse_z_velohhcity^2)
+/define/custom-field-functions/define "resolved-tke" .5*(rmse_x_velocity^2 + rmse_y_velocity^2 + rmse_z_velocity^2)
 /define/custom-field-functions/define "mixed-modeled-tke" (viscosity_turb*turb_diss_rate*sbes_shielding_function/(density*0.09))^(1/2) + (viscosity_turb*(1-sbes_shielding_function)/(density*.325*(cell_volume^(1/3))))^(1/2)
 /define/custom-field-functions/define "percent_resolved_tke" resolved_tke/(resolved_tke+mixed_modeled_tke)
+
+
+/define/custom-field-functions/define "rans_tke" turb_kinetic_energy*sbes_shielding_function
+/define/custom-field-functions/define "sgs_tke" (viscosity_turb*(1-sbes_shielding_function)/(density*0.325*cell_volume^(1/3)))^2
+/define/custom-field-functions/define "total_modeled_tke" rans_tke+sgs_tke
+/define/custom-field-functions/define "resolved-tke" .5*(rmse_x_velocity^2 + rmse_y_velocity^2 + rmse_z_velocity^2)
+/define/custom-field-functions/define "percent_resolved_tke" resolved_tke/(resolved_tke+total_modeled_tke)
+
+
 
 /surface/iso-surface raw-q-criterion q-crit () 2244 3002 () 1.5e6 ()
 /display/objects/create contour vel_qcrit surfaces-list q-crit () field velocity-magnitude color-map color "bgr" length 1.2 width 6 position 0 () ()
@@ -48,8 +57,8 @@
 /display/objects/display velmag_bp
 /views/restore-view front
 /views/auto-scale
-/display/views/camera/zoom-camera 2
-/display/views/camera/dolly-camera 0.05 0 0
+/display/views/camera/zoom-camera 4
+/display/views/camera/dolly-camera 0.15 0 0
 /views/save-view bp-contour
 
 ;###### Display and save first image
