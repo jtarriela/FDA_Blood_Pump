@@ -1,0 +1,67 @@
+/file/read-case-data "C5_SBES_19M_T-1-24000.cas.h5"
+
+
+;##########  Energy Dissipation Scalars ##########;
+
+;/define/user-defined/user-defined-scalars 6 no no yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default"
+
+/define/named-expressions/add resolved_dissipation_sbes definition "(1-ShieldingFunctionforSBESorSDES)*(StrainRate)^2*(0.0035[kg/(m s)])/Density" description "Resolved dissipation portion of Turbulent Energy Dissipation" ()
+/define/named-expression/add total_dissipation definition "resolved_dissipation_sbes + TurbulenceDissipationRate" ()
+
+/define/named-expressions/add EDS_GW definition "1035*(3.62E-7*(Density*total_dissipation*0.0035[Pa s]/1[Pa^2])^(2.416/2))^(1/0.785)" ()
+/define/named-expressions/add EDS_HO definition "1035*(1.8E-8*(Density*total_dissipation*0.0035[Pa s]/1[Pa^2])^(1.991/2))^(1/0.765)" ()
+/define/named-expressions/add EDS_TZ definition "1035*(1.228E-7*(Density*total_dissipation*0.0035[Pa s]/1[Pa^2])^(1.9918/2))^(1/0.6606)" ()
+/define/named-expressions/add EDB definition "1035*(1.467E-2*(total_dissipation*1E-7[s^3/m^2]))^(2.2)" ()
+
+/define/materials/change-create blood blood no no no no no no yes defined-per-uds 0 constant 0 1 constant 0 2 constant 0 3 constant 0 4 constant 0 5 constant 0 -1 no
+/define/boundary-conditions/fluid volute no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" 1 yes "EDS_GW" 1 yes "EDS_HO" 1 yes "EDS_TZ" 1 yes "EDB" no no no 0 no 0 no 0 no 0 no 0 no 0 no 1 no no no no no
+/define/boundary-conditions/fluid rotor_geometry no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" 1 yes "EDS_GW" 1 yes "EDS_HO" 1 yes "EDS_TZ" 1 yes "EDB" no yes -1 no "rotor_speed" no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 1 "none" no no no no no no
+
+;########## Change within cell zones and difusion w/in diffusivity
+
+/solve/report-definitions/add EDS_GW surface-massavg surface-names outlet () field uds-2-scalar ()
+/solve/report-definitions/add EDS_HO surface-massavg surface-names outlet () field uds-3-scalar ()
+/solve/report-definitions/add EDS_TZ surface-massavg surface-names outlet () field uds-4-scalar ()
+/solve/report-definitions/add EDB surface-massavg surface-names outlet () field uds-5-scalar ()
+
+/solve/report-files/add/EDS_GW active yes frequency 1 print yes report-defs eds_gw  () file-name EDS_GW  ()
+/solve/report-files/add/EDS_HO active yes frequency 1 print yes report-defs eds_ho () file-name EDS_HO ()
+/solve/report-files/add/EDS_TZ active yes frequency 1 print yes report-defs eds_tz () file-name EDS_TZ ()
+/solve/report-files/add/EDB active yes frequency 1 print yes report-defs edb () file-name EDB ()
+
+/solve/report-files/edit eds_gw report-defs eds_gw () ()
+/solve/report-files/edit eds_ho report-defs eds_ho () ()
+/solve/report-files/edit eds_tz report-defs eds_tz () ()
+/solve/report-files/edit EDB report-defs EDB () ()s
+
+/solve/execute-command disable contour-disp
+/solve/execute-command disable show-velo
+/solve/execute-command disable velo-save
+/solve/execute-command disable show-pres
+/solve/execute-command disable pres-save
+/solve/execute-command disable show-hemo
+/solve/execute-command disable hemo-save
+
+
+/solve/set/discretization-scheme/uds-2 1
+/solve/set/discretization-scheme/uds-3 1
+/solve/set/discretization-scheme/uds-4 1
+/solve/set/discretization-scheme/uds-5 1
+
+
+
+
+
+
+;### add to tecplot exports
+;### add to data sampling
+;#second order upwind
+;### URF to 0.9 all uds
+;UDF /apps/ansys/2021r1/v211/fluent/fluent21.1.0/src/storage/storage.h
+--
+
+
+exit
+
+/define/user-defined/user-defined-scalars 6 no no yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default"
+/define/named-expressions/add EDS_GW definition "1" ()

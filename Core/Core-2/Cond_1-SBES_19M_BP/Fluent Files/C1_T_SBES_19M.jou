@@ -191,8 +191,28 @@
 
 /file/transient-export/tecplot blade_passage blade-passage () velocity-magnitude z-coordinate x-coordinate y-coordinate () blade_pass_export time-step 400 time-step
 
+;/define/custom-field-functions/define "gw-pfhb_mg-per-dL" (uds_0_scalar/1035)^(.758)*11500
+/define/custom-field-functions/define "turb-diss-rate-rans" turb_diss_rate*sbes_shielding_function
+/define/custom-field-functions/define "turb-diss-rate-sgs-fluent" turb_diss_rate*(1-sbes_shielding_function)
+/define/custom-field-functions/define "turb-diss-rate-sgs-cff" viscosity_turb/density*(strain_rate_mag^2)*(1-sbes_shielding_function)
+/define/custom-field-functions/define "turb-diss-rate-resolved" 0.0035/density*(strain_rate_mag^2)*(1-sbes_shielding_function)
+/define/custom-field-functions/define "total-turb-diss-rate-fluent" turb_diss_rate_rans + turb_diss_rate_sgs_fluent + turb_diss_rate_resolved
+/define/custom-field-functions/define "total-turb-diss-rate-cff" turb_diss_rate_rans + turb_diss_rate_sgs_cff + turb_diss_rate_resolved
+;/define/custom-field-functions/define "kolmogorov-length-scale" (((0.0035/density)^3)/total_turb_diss_rate_fluent)^(.25)
 
 /solve/set/data-sampling yes 1600 yes yes no
+
+
+
+/define/custom-field-functions/define "tke-rans" turb_kinetic_energy*sbes_shielding_function
+/define/custom-field-functions/define "tke-sgs" turb_kinetic_energy*(1-sbes_shielding_function)
+/define/custom-field-functions/define "resolved-tke" .5*(rmse_x_velocity^2 + rmse_y_velocity^2 + rmse_z_velocity^2)*(1-sbes_shielding_function)
+/define/custom-field-functions/define "tke-total" tke_rans + resolved_tke + tke_sgs
+/solve/set/data-sampling-options add-datasets rotor_geometry volute () turb-diss-rate turb-kinetic-energy uds-0-scalar uds-1-scalar viscosity-turb sbes-shielding-function strain-rate-mag ()
+
+/solve/set/data-sampling yes 1600 yes yes yes no no no no yes yes yes yes yes yes yes yes yes yes
+
+
 /solve/dual-time-iterate 200 120;[max timesteps, iterations per step]
 
 

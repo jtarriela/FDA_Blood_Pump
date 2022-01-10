@@ -36,8 +36,13 @@ in_strand = input("Which strand do you want to average? Enter the strand number 
 with tp.session.suspend():
     dataset = tp.active_frame().dataset
 
-    variables_to_average = [dataset.variable("mvel")]
-    # constant_variables = [dataset.variable("x"), dataset.variable("y")]
+    variables_to_average = [dataset.variable("Magnitude Velocity")]
+    constant_variables = [dataset.variable("CoordinateX"),
+                          dataset.variable("CoordinateY"),
+                          dataset.variable("CoordinateZ"),
+                          dataset.variable("X Component Position"),
+                          dataset.variable("Y Component Position"),
+                          dataset.variable("Z Component Position")]
     # variables_to_average = dataset.variables()
     constant_variables = None
 
