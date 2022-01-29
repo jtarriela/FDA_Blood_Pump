@@ -1,23 +1,22 @@
-/file/read-case-data "C5_SBES_19M_T-1-24000.cas.h5"
-
-
 ;##########  Energy Dissipation Scalars ##########;
+
+
+/define/models/steady yes ;STEADY STATE
 
 ;/define/user-defined/user-defined-scalars 6 no no yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default"
 
-/define/named-expressions/add resolved_dissipation_sbes definition "(1-ShieldingFunctionforSBESorSDES)*(StrainRate)^2*(0.0035[kg/(m s)])/Density" description "Resolved dissipation portion of Turbulent Energy Dissipation" ()
-/define/named-expression/add total_dissipation definition "resolved_dissipation_sbes + TurbulenceDissipationRate" ()
-
-/define/named-expressions/add EDS_GW definition "1035*(3.62E-7*(Density*total_dissipation*0.0035[Pa s]/1[Pa^2])^(2.416/2))^(1/0.785)" ()
-/define/named-expressions/add EDS_HO definition "1035*(1.8E-8*(Density*total_dissipation*0.0035[Pa s]/1[Pa^2])^(1.991/2))^(1/0.765)" ()
-/define/named-expressions/add EDS_TZ definition "1035*(1.228E-7*(Density*total_dissipation*0.0035[Pa s]/1[Pa^2])^(1.9918/2))^(1/0.6606)" ()
-/define/named-expressions/add EDB definition "1035*(1.467E-2*(total_dissipation*1E-7[s^3/m^2]))^(2.2)" ()
+/define/user-defined/user-defined-scalars 6 no no yes "mass flow rate" yes "mass flow rate" yes "mass flow rate" yes "mass flow rate" yes "mass flow rate" yes "mass flow rate" "default"
 
 /define/materials/change-create blood blood no no no no no no yes defined-per-uds 0 constant 0 1 constant 0 2 constant 0 3 constant 0 4 constant 0 5 constant 0 -1 no
-/define/boundary-conditions/fluid volute no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" 1 yes "EDS_GW" 1 yes "EDS_HO" 1 yes "EDS_TZ" 1 yes "EDB" no no no 0 no 0 no 0 no 0 no 0 no 0 no 1 no no no no no
-/define/boundary-conditions/fluid rotor_geometry no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" 1 yes "EDS_GW" 1 yes "EDS_HO" 1 yes "EDS_TZ" 1 yes "EDB" no yes -1 no "rotor_speed" no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 1 "none" no no no no no no
+
+/define/boundary-conditions/fluid volute no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" 1 no yes "EDS_GW::libudf" 1 no yes "EDS_HO::libudf" 1 no yes "EDS_TZ::libudf" 1 no yes "EDB::libudf" no no no 0 no 0 no 0 no 0 no 0 no 0 no 1 no no no no no
+
+/define/boundary-conditions/fluid rotor_geometry no yes 0 0 0 0 0 0 1 no yes "GW_model::libudf" 1 no yes "GW_HO::libudf" 1 no yes "EDS_GW::libudf" 1 no yes "EDS_HO::libudf" 1 no yes "EDS_TZ::libudf" 1 no yes "EDB::libudf" no yes -1 no "rotor_speed" no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 0 no 1 "none" no no no no no no
+
 
 ;########## Change within cell zones and difusion w/in diffusivity
+
+;########## DELETE ALL REPORT DEFFINITIONS
 
 /solve/report-definitions/add EDS_GW surface-massavg surface-names outlet () field uds-2-scalar ()
 /solve/report-definitions/add EDS_HO surface-massavg surface-names outlet () field uds-3-scalar ()
@@ -27,12 +26,50 @@
 /solve/report-files/add/EDS_GW active yes frequency 1 print yes report-defs eds_gw  () file-name EDS_GW  ()
 /solve/report-files/add/EDS_HO active yes frequency 1 print yes report-defs eds_ho () file-name EDS_HO ()
 /solve/report-files/add/EDS_TZ active yes frequency 1 print yes report-defs eds_tz () file-name EDS_TZ ()
-/solve/report-files/add/EDB active yes frequency 1 print yes report-defs edb () file-name EDB ()
+/solve/report-files/add/EDB active yes frequency 1 print yes report-defs edb () file-name edb ()
+
+/solve/report-files/add/point-tau_vm-a active yes frequency 1 print no report-defs point-tau_vm-a () file-name point-tau_vm-a ()
+/solve/report-files/add/point-tau_vm-b active yes frequency 1 print no report-defs point-tau_vm-b () file-name point-tau_vm-b ()
+/solve/report-files/add/point-tau_vm-c active yes frequency 1 print no report-defs point-tau_vm-c () file-name point-tau_vm-c ()
+/solve/report-files/add/point-tau_vm-d active yes frequency 1 print no report-defs point-tau_vm-d () file-name point-tau_vm-d ()
+/solve/report-files/add/point-tau_vm-e active yes frequency 1 print no report-defs point-tau_vm-e () file-name point-tau_vm-e ()
+
+/solve/report-files/add/point-pressure-a  active yes frequency 1 print no report-defs point-pressure-a () file-name point-pressure-a ()
+/solve/report-files/add/point-pressure-b  active yes frequency 1 print no report-defs point-pressure-b () file-name point-pressure-b ()
+/solve/report-files/add/point-pressure-c  active yes frequency 1 print no report-defs point-pressure-c () file-name point-pressure-c ()
+/solve/report-files/add/point-pressure-d  active yes frequency 1 print no report-defs point-pressure-d () file-name point-pressure-d ()
+/solve/report-files/add/point-pressure-e  active yes frequency 1 print no report-defs point-pressure-e () file-name point-pressure-e ()
+
+/solve/report-files/add/point-shear-a  active yes frequency 1 print no report-defs point-shear-a () file-name point-shear-a ()
+/solve/report-files/add/point-shear-b  active yes frequency 1 print no report-defs point-shear-b () file-name point-shear-b ()
+/solve/report-files/add/point-shear-c  active yes frequency 1 print no report-defs point-shear-c () file-name point-shear-c ()
+/solve/report-files/add/point-shear-d  active yes frequency 1 print no report-defs point-shear-d () file-name point-shear-d ()
+/solve/report-files/add/point-shear-e  active yes frequency 1 print no report-defs point-shear-e () file-name point-shear-e ()
+
+/solve/report-files/add/point-GW-a  active yes frequency 1 print no report-defs point-GW-a () file-name point-GW-a ()
+/solve/report-files/add/point-GW-b  active yes frequency 1 print no report-defs point-GW-b () file-name point-GW-b ()
+/solve/report-files/add/point-GW-c  active yes frequency 1 print no report-defs point-GW-c () file-name point-GW-c ()
+/solve/report-files/add/point-GW-d  active yes frequency 1 print no report-defs point-GW-d () file-name point-GW-d ()
+/solve/report-files/add/point-GW-e  active yes frequency 1 print no report-defs point-GW-e () file-name point-GW-e ()
+
+/solve/report-files/add/point-HO-a  active yes frequency 1 print no report-defs point-HO-a () file-name point-HO-a ()
+/solve/report-files/add/point-HO-b  active yes frequency 1 print no report-defs point-HO-b () file-name point-HO-b ()
+/solve/report-files/add/point-HO-c  active yes frequency 1 print no report-defs point-HO-c () file-name point-HO-c ()
+/solve/report-files/add/point-HO-d  active yes frequency 1 print no report-defs point-HO-d () file-name point-HO-d ()
+/solve/report-files/add/point-HO-e  active yes frequency 1 print no report-defs point-HO-e () file-name point-HO-e ()
+
+/solve/report-files/add/point-vel-a  active yes frequency 1 print no report-defs point-vel-a () file-name point-vel-a ()
+/solve/report-files/add/point-vel-b  active yes frequency 1 print no report-defs point-vel-b () file-name point-vel-b ()
+/solve/report-files/add/point-vel-c  active yes frequency 1 print no report-defs point-vel-c () file-name point-vel-c ()
+/solve/report-files/add/point-vel-d  active yes frequency 1 print no report-defs point-vel-d () file-name point-vel-d ()
+/solve/report-files/add/point-vel-e  active yes frequency 1 print no report-defs point-vel-e () file-name point-vel-e ()
+
 
 /solve/report-files/edit eds_gw report-defs eds_gw () ()
 /solve/report-files/edit eds_ho report-defs eds_ho () ()
 /solve/report-files/edit eds_tz report-defs eds_tz () ()
-/solve/report-files/edit EDB report-defs EDB () ()s
+/solve/report-files/edit edb report-defs edb () ()
+
 
 /solve/execute-command disable contour-disp
 /solve/execute-command disable show-velo
@@ -49,19 +86,79 @@
 /solve/set/discretization-scheme/uds-5 1
 
 
+/solve/set/equations flow no
+/solve/set/equations kw no
+
+;################################################################################################## Transient
+
+/solve/set/equations flow yes
+/solve/set/equations kw yes
+
+/define/models/u2ob yes
+/define/models/viscous kw-sst yes
+
+/define/models/viscous/turbulence-expert/turb-add-sbes-sdes yes
+/define/models/viscous/turbulence-expert/sbes-sdes-hybrid-model 2
+/define/models/viscous/turbulence-expert/sbes-sgs-option 3
+
+/define/boundary-conditions/modify-zones/mrf-to-sliding-mesh rotor_geometry
+
+/solve/monitors/residual/convergence-criteria 0.001 0.001 0.001 0.001 0.001 0.001  0.0001 0.0001 0.0001 0.0001 0.0001 0.0001
+
+/solve/report-files/edit eds_gw frequency-of time-step frequency 1 ()
+/solve/report-files/edit eds_ho frequency-of time-step frequency 1 ()
+/solve/report-files/edit eds_tz frequency-of time-step frequency 1 ()
+/solve/report-files/edit edb frequency-of time-step frequency 1 ()
 
 
+/solve/report-files/edit gw-hemolysis frequency-of time-step frequency 10 ()
+/solve/report-files/edit ho-hemolysis frequency-of time-step frequency 10 ()
 
+/solve/report-files/edit max-vel-rotor frequency-of time-step frequency 10 ()
+/solve/report-files/edit p-in frequency-of time-step frequency 10 ()
+/solve/report-files/edit p-out frequency-of time-step frequency 10 ()
+/solve/report-files/edit mass-flux frequency-of time-step frequency 10 ()
+/solve/report-files/edit gw-hemolysis frequency-of time-step frequency 10 ()
+/solve/report-files/edit ho-hemolysis frequency-of time-step frequency 10 ()
 
-;### add to tecplot exports
-;### add to data sampling
-;#second order upwind
-;### URF to 0.9 all uds
-;UDF /apps/ansys/2021r1/v211/fluent/fluent21.1.0/src/storage/storage.h
---
+/solve/report-files/edit point-pressure-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-pressure-e frequency-of time-step frequency 10 ()
 
+/solve/report-files/edit point-shear-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-shear-e frequency-of time-step frequency 10 ()
 
-exit
+/solve/report-files/edit point-GW-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-GW-e frequency-of time-step frequency 10 ()
 
-/define/user-defined/user-defined-scalars 6 no no yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default" yes "mass flow rate" "default"
-/define/named-expressions/add EDS_GW definition "1" ()
+/solve/report-files/edit point-vel-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-vel-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-tau_vm-a frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-b frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-c frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-d frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-tau_vm-e frequency-of time-step frequency 10 ()
+
+/solve/report-files/edit point-HO-a  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-b  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-c  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-d  frequency-of time-step frequency 10 ()
+/solve/report-files/edit point-HO-e  frequency-of time-step frequency 10 ()
+
+/solve/set/time-step 0.000015
+/solve/set/reporting-interval 1
+/file/auto-save/data-frequency 200
+/file/auto-save/case-frequency each-time
+/file/auto-save/root-name "C1_19M_T"
