@@ -95,7 +95,6 @@ with tp.session.suspend():
         copied_zone.name = "Copied - Zone {}".format(i)
         print('Successfully copied Zone {}.'.format(i))
         t2 = time.time()
-        print('Interpolating to new Zone...')
         tp.data.operate.interpolate_inverse_distance(destination_zone=dataset.zone("Copied - Zone {}".format(i)),
                                                      source_zones=dataset.zone("Zone {}".format(i)))
         elapsed2 = time.time() - t2
@@ -116,28 +115,26 @@ with tp.session.suspend():
     in_strand = 1
     zones_by_strand = tputils.get_zones_by_strand(dataset)
     tp.data.operate.execute_equation("{XY Magnitude Velocity} = sqrt({X Component Velocity}**2 + {Y Component Velocity}**2)")
+    print('Written XY/UV Velocity \n')
     variables_to_average = [dataset.variable("Magnitude Velocity"),
-                            dataset.variable("XY Magnitude Velocity"),
+                            dataset.variable("dz-velocity-dz"),
+                            dataset.variable("dx-velocity-dz"),
+                            dataset.variable("dy-velocity-dz"),
+                            dataset.variable("Turbulent Energy Dissipation"),
+                            dataset.variable("Eddy Viscosity"),
                             dataset.variable("X Component Velocity"),
                             dataset.variable("Y Component Velocity"),
-                            dataset.variable("Z Component Velocity"),
                             dataset.variable("Turbulent Kinetic Energy"),
                             dataset.variable("strain-rate-mag"),
-                            # dataset.variable("sbes-shielding-function"),
-                            # dataset.variable("turb-diss-rate-rans"),
-                            # dataset.variable("turb-diss-rate-sgs-cff"),
-                            dataset.variable("Eddy Viscosity"),
-                            dataset.variable("Turbulent Energy Dissipation"),
-                            # dataset.variable("turb-diss-rate-resolved"),
+                            dataset.variable("Z Component Velocity"),
                             dataset.variable("dz-velocity-dx"),
                             dataset.variable("dy-velocity-dx"),
                             dataset.variable("dx-velocity-dx"),
-                            dataset.variable("dx-velocity-dx"),
-                            dataset.variable("dz-velocity-dz"),
-                            dataset.variable("dy-velocity-dz"),
+                            dataset.variable("Magnitude Velocity"),
                             dataset.variable("dz-velocity-dy"),
                             dataset.variable("dy-velocity-dy"),
-                            dataset.variable("dx-velocity-dy")
+                            dataset.variable("dx-velocity-dy"),
+                            dataset.variable("XY Magnitude Velocity")
                             ]
     constant_variables = [dataset.variable("CoordinateX"),
                           dataset.variable("CoordinateY"),
@@ -158,8 +155,6 @@ with tp.session.suspend():
 
     # Create variable Fluctuating Velocity
     TA_index_str = "[{}]".format(dataset.num_zones)
-    print(TA_index_str)
-    print("{u'} = {X Component Velocity} - {X Component Velocity}" + TA_index_str)
     tp.data.operate.execute_equation("{u'} = {X Component Velocity} - {X Component Velocity}" + TA_index_str)
     tp.data.operate.execute_equation("{v'} = {Y Component Velocity} - {Y Component Velocity}" + TA_index_str)
     tp.data.operate.execute_equation("{w'} = {Z Component Velocity} - {Z Component Velocity}" + TA_index_str)
@@ -167,6 +162,8 @@ with tp.session.suspend():
     tp.data.operate.execute_equation("{u'^2} = {u'}*{u'}")
     tp.data.operate.execute_equation("{v'^2} = {v'}*{v'}")
     tp.data.operate.execute_equation("{w'^2} = {w'}*{w'}")
+
+
 
     # Delete previous TA
     dataset.delete_zones(dataset.zone("Zone: TA-1"))
@@ -178,18 +175,15 @@ with tp.session.suspend():
                             dataset.variable("Z Component Velocity"),
                             dataset.variable("Turbulent Kinetic Energy"),
                             dataset.variable("strain-rate-mag"),
-                            # dataset.variable("sbes-shielding-function"),
-                            # dataset.variable("turb-diss-rate-rans"),
-                            # dataset.variable("turb-diss-rate-sgs-cff"),
+                            dataset.variable("des-tke-dissipation-multiplier"),
                             dataset.variable("Eddy Viscosity"),
                             dataset.variable("Turbulent Energy Dissipation"),
-                            # dataset.variable("turb-diss-rate-resolved"),
                             dataset.variable("dz-velocity-dx"),
                             dataset.variable("dy-velocity-dx"),
                             dataset.variable("dx-velocity-dx"),
-                            dataset.variable("dx-velocity-dx"),
                             dataset.variable("dz-velocity-dz"),
                             dataset.variable("dy-velocity-dz"),
+                            dataset.variable("dx-velocity-dz"),
                             dataset.variable("dz-velocity-dy"),
                             dataset.variable("dy-velocity-dy"),
                             dataset.variable("dx-velocity-dy"),
@@ -198,7 +192,8 @@ with tp.session.suspend():
                             dataset.variable("w'"),
                             dataset.variable("u'^2"),
                             dataset.variable("v'^2"),
-                            dataset.variable("w'^2")
+                            dataset.variable("w'^2"),
+                            dataset.variable("XY Magnitude Velocity")
                             ]
 
     # Average square of fluctuating components
@@ -222,13 +217,21 @@ with tp.session.suspend():
     #     "{percent_Dissipation} =  ({turb-diss-rate-resolved}*(1-{sbes-shielding-function})) /{Total_Dissipation}",
     #     zones=dataset.zone("Zone: TA-2"))
 
+    # Add following variables for computation of Von Mises Stress
+
+    # {t11} = 2 * {dx - velocity - dx} * 0.0035 + (2 * {dx - velocity - dx} * {Eddy Viscosity} - 1 / 3 * 1035 * ({TKE_resolved}+{Turbulent Energy Dissipation}))
+    # {t22} = 2 * {dy - velocity - dy} * 0.0035 + (2 * {dy - velocity - dy} * {Eddy Viscosity} - 1 / 3 * 1035 * ({TKE_resolved}+{Turbulent Energy Dissipation}))
+    # {t33} = 2 * {dz - velocity - dz} * 0.0035 + (2 * {dy - velocity - dy} * {Eddy Viscosity} - 1 / 3 * 1035 * ({TKE_resolved}+{Turbulent Energy Dissipation}))
+    # {t12} = (0.0035 + {Eddy Viscosity}) * ({dx - velocity - dy} + {dy - velocity - dx})
+    # {t23} = (0.0035 + {Eddy Viscosity}) * ({dy - velocity - dz} + {dz - velocity - dy})
+    # {t13} = (0.0035 + {Eddy Viscosity}) * ({dx - velocity - dz} + {dz - velocity - dx})
+    # {stress_vm} = sqrt(.5 * (({t11} - {t22}) ** 2 + ({t22} - {t33}) ** 2 + ({t33} - {t11}) ** 2 + 6 * ({t12} ** 2 + {t23} ** 2 + {t13} ** 2)))
+
     tp.data.operate.execute_equation('{radius} = sqrt({CoordinateX}**2+{CoordinateY}**2)')
 
 
     # Loading experimental data df
-
-    exp_df = experimental_df_loader("C6_Experimental")
-    # exp_df = experimental_df_loader("C5_Experimental")
+    exp_df = experimental_df_loader("C5_Experimental")
     # exp_df = experimental_df_loader("C4_Experimental")
     # exp_df = experimental_df_loader("C1_Experimental")
 
@@ -249,14 +252,14 @@ with tp.session.suspend():
                                                      source_zones=dataset.zone("Zone: TA-2"))
         elapsed3 = time.time() - t3
         print('Successfully interpolated Zone {} in {} seconds.\n'.format(i[1], elapsed3))
-#
-print('Post-Processing Complete')
-#
 
-#TODO compute new variable fluctuating velocity components for TKE, resolved TKE, %TKE
+print('Post-Processing Complete')
+
+
+# compute new variable fluctuating velocity components for TKE, resolved TKE, %TKE
 # https://www.youtube.com/watch?v=QKDFTCUh7zU&ab_channel=FluidMechanics101
 
-#TODO save ascii file
+# save ascii file
 
 
 ### Equations for Tecplot Post Pro
